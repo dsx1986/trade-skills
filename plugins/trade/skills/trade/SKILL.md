@@ -12,8 +12,10 @@ description: >
   money-flow / 流入流出 checks, or ticker mentions (e.g., "analyze APP").
   Triggers on multi-leg options (Jade Lizard, bull put spread, iron
   condor, diagonal, calendar), IV / IV crush, LEAPS / stock
-  replacement, dealer GEX / gamma / options flow, or VIX / vol hedging. 27 pitfalls, a gamma framework, case studies. TradingView
-  + Funda for data; replies in Chinese. Check 3 axes: vega vs IVR (p19),
+  replacement, dealer GEX / gamma / options flow, VIX / vol hedging,
+  or NQ / ES 夜盘 / overnight futures. 27 pitfalls,
+  frameworks, case studies. TradingView + Funda for data; replies in
+  Chinese. Check 3 axes: vega vs IVR (p19),
   delta vs thesis, asymmetry; bull-conviction >= 4 forbids Jade Lizard /
   IC / Calendar (p24).
 metadata:
@@ -110,9 +112,10 @@ This knowledge base is an **[Open Knowledge Format (OKF) v0.1](references/OKF.md
 | [references/strategies.md](references/strategies.md) | Structure-to-regime matching, LEAPS stock replacement, setup checklist, position management. Loaded by default in `analysis`. |
 | [references/gamma-framework.md](references/gamma-framework.md) | Dealer GEX + options chain + IV term + flow → multi-factor probability map. Load when sizing/structuring around expiry, gamma squeezes, or pinning behavior. |
 | [references/price-action-framework.md](references/price-action-framework.md) | Orderbook microstructure mental model. Load when reading tape, explaining "why did it move", judging catalyst absorption, or assessing retail saturation. |
+| [references/overnight-futures-framework.md](references/overnight-futures-framework.md) | Overnight index-futures (夜盘) attribution — "what's driving NQ/ES right now". Session clock, three-complex divergence read, catalyst clock, scenarios, data-freshness caveats. |
 | [references/pitfalls/index.md](references/pitfalls/index.md) | Index of 27 trading pitfalls — lookup by trade type. |
 | [references/pitfalls/NN-*.md](references/pitfalls/) | Individual pitfall rules — load when a relevant trade situation arises. The `analysis` reference has a full situation → pitfall map. |
-| [references/ticker/index.md](references/ticker/index.md) | Index of trade case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981). |
+| [references/ticker/index.md](references/ticker/index.md) | Index of trade case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ). |
 | [references/ticker/&lt;name&gt;.md](references/ticker/) | Individual case study — load when the current setup pattern-matches a prior trade. |
 | `<knowledge>/` (user-chosen path, scaffolded by `/trade setup`) | User-owned documents. `substack/*.yaml` and `twitter/*.yaml` are parsed external content; `writedowns/*.md` are user-authored notes; any other subdir (e.g. a curated module) is loaded too. `*/raw/` holds source PDFs / screenshots and is normally not loaded. Checked at the start of every `analysis` — see `references/commands/analysis.md` for the full situation → reference map. |
 
