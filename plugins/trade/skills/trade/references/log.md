@@ -10,6 +10,12 @@ timestamp: 2026-06-13T00:00:00Z
 
 OKF reserved `log.md` — chronological history of this knowledge bundle, most recent first. Seeded from git history; append a dated entry whenever you add or materially revise a concept (see [`OKF.md`](OKF.md) conformance checklist).
 
+## 2026-07-22 — Overnight index-futures framework + NQ case study
+
+- Added [`overnight-futures-framework.md`](overnight-futures-framework.md) — the 夜盘 attribution method: Globex session clock (foreign catalysts converted to ET), tape-vs-prior-settle read, the **three-complex divergence read** (equity futures vs safe-haven/inflation complex vs live Asia cash — the divergence pattern *is* the attribution), catalyst clock (incl. Fed-blackout awareness), attribution discipline (every driver needs a number + a headline; yields coincident per pitfall 22), and scenario output keyed to levels. Includes verified data-source caveats for the Funda/FMP + TradingView stack (quote freshness vs 5-min candle lag, calendar `limit` ≤ 1000, ADR-dupe filtering, KOSPI intraday empty).
+- Added [`ticker/nq-2026-07.md`](ticker/nq-2026-07.md) — worked example, run live 2026-07-21/22 (Asia chip euphoria vs 11th-night-of-Iran-strikes oil bid; KOSPI floor decaying +5.9% → +4.3%; SK Hynix print pending inside the US night). Base scenario (29,150–29,350 range) played out.
+- Wired into [`commands/analysis.md`](commands/analysis.md) (new index-futures/夜盘 situation row), [`index.md`](index.md), [`ticker/index.md`](ticker/index.md), and the [`../SKILL.md`](../SKILL.md) frameworks table + trigger description. The same method is productized as the funda-app `overnight-futures` play (funda-app PR #4007).
+
 ## 2026-06-24 — MU case study (post-print direction read)
 
 - Added [`ticker/mu-2026-06.md`](ticker/mu-2026-06.md) — FY26Q3 blowout beat (rev +16%, EPS +21%, topping even Funda's aggressive preview). Analyst-side error: called "sell-the-news" off an early AH snapshot (+3.6% @ 16:05) plus full-day flow (−$3.4M); corrected when AH accelerated to +9% and **post-event** flow was +$72.5M bullish. Lesson: post-print, sample the AH price **trend** (not a snapshot) and use **post-event** flow (not full-day); reaction-magnitude ≠ direction. Sister case to NOK 2026-04 (pattern published ahead of the current data).

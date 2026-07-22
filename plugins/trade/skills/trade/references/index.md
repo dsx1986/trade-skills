@@ -22,6 +22,7 @@ The curated, shared knowledge bundle behind the `trade` skill. It is an **[Open 
 | [`strategies.md`](strategies.md) | Framework | Structure-to-regime matching, the three axes (direction / vega / asymmetry), LEAPS stock replacement, setup checklist, position management. |
 | [`gamma-framework.md`](gamma-framework.md) | Framework | Dealer GEX + options chain + IV term + flow → multi-factor probability map. |
 | [`price-action-framework.md`](price-action-framework.md) | Framework | Orderbook microstructure mental model — why the same news lands differently. |
+| [`overnight-futures-framework.md`](overnight-futures-framework.md) | Framework | Overnight index-futures (夜盘) attribution — session clock, three-complex divergence read, catalyst clock, scenario output, data-freshness caveats. |
 
 ## Pitfalls
 
@@ -29,7 +30,7 @@ The curated, shared knowledge bundle behind the `trade` skill. It is an **[Open 
 
 ## Case studies
 
-**[`ticker/index.md`](ticker/index.md)** — closed/in-progress trade post-mortems (`Trade Case Study`): INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981. Load when the current setup pattern-matches a prior trade.
+**[`ticker/index.md`](ticker/index.md)** — closed/in-progress trade post-mortems (`Trade Case Study`): INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ. Load when the current setup pattern-matches a prior trade.
 
 ## Command references
 
