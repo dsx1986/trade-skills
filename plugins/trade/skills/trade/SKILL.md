@@ -1,7 +1,7 @@
 ---
 name: trade
 description: >
-  Personal US-equity options trading knowledge base with subcommands.
+  Personal US-equity options trading knowledge base.
   `/trade setup` scaffolds a knowledge directory (substack, X,
   writedowns); `/trade import [file]` parses one raw file (PDF,
   screenshot, text) into structured YAML; `/trade report [tickers]`
@@ -9,7 +9,7 @@ description: >
   proxy from options premium-flow); `/trade analysis` (or any
   unrecognized first word) runs the default analysis flow, auto-loading
   the knowledge directory. Use for trade analysis, earnings plays,
-  money-flow / 流入流出 checks, or ticker mentions (e.g., "analyze APP").
+  money-flow / 流入流出 / 母单吸筹·派发 checks, or ticker mentions (e.g., "analyze APP").
   Triggers on multi-leg options (Jade Lizard, bull put spread, iron
   condor, diagonal, calendar), IV / IV crush, LEAPS / stock
   replacement, dealer GEX / gamma / options flow, VIX / vol hedging,
@@ -113,6 +113,7 @@ This knowledge base is an **[Open Knowledge Format (OKF) v0.1](references/OKF.md
 | [references/gamma-framework.md](references/gamma-framework.md) | Dealer GEX + options chain + IV term + flow → multi-factor probability map. Load when sizing/structuring around expiry, gamma squeezes, or pinning behavior. |
 | [references/price-action-framework.md](references/price-action-framework.md) | Orderbook microstructure mental model. Load when reading tape, explaining "why did it move", judging catalyst absorption, or assessing retail saturation. |
 | [references/overnight-futures-framework.md](references/overnight-futures-framework.md) | Overnight index-futures (夜盘) attribution — "what's driving NQ/ES right now". Session clock, three-complex divergence read, catalyst clock, scenarios, data-freshness caveats. |
+| [references/parent-order-flow-framework.md](references/parent-order-flow-framework.md) | Parent-order (母单) net-flow × volatility × trend state matrix — 吸筹 / 动量 / 派发 / 风险释放 / 承接·换手. Load when classifying who is buying vs selling, reading 母单/大单 net flow, or calling accumulation vs distribution. |
 | [references/pitfalls/index.md](references/pitfalls/index.md) | Index of 27 trading pitfalls — lookup by trade type. |
 | [references/pitfalls/NN-*.md](references/pitfalls/) | Individual pitfall rules — load when a relevant trade situation arises. The `analysis` reference has a full situation → pitfall map. |
 | [references/ticker/index.md](references/ticker/index.md) | Index of trade case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ). |
