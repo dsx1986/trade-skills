@@ -23,6 +23,7 @@ The curated, shared knowledge bundle behind the `trade` skill. It is an **[Open 
 | [`gamma-framework.md`](gamma-framework.md) | Framework | Dealer GEX + options chain + IV term + flow → multi-factor probability map. |
 | [`price-action-framework.md`](price-action-framework.md) | Framework | Orderbook microstructure mental model — why the same news lands differently. |
 | [`overnight-futures-framework.md`](overnight-futures-framework.md) | Framework | Overnight index-futures (夜盘) attribution — session clock, three-complex divergence read, catalyst clock, scenario output, data-freshness caveats. |
+| [`parent-order-flow-framework.md`](parent-order-flow-framework.md) | Framework | Parent-order (母单) net-flow × volatility × trend state matrix — accumulation / momentum / distribution / capitulation / absorption, with measurement caveats. |
 
 ## Pitfalls
 

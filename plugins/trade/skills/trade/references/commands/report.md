@@ -88,5 +88,6 @@ Always flag **earnings proximity** (from #2): a name reporting in days explains 
 - [`../pitfalls/02-single-flow-not-smart-money.md`](../pitfalls/02-single-flow-not-smart-money.md) — one institutional order isn't edge.
 - [`../pitfalls/17-dealer-flow-not-retail.md`](../pitfalls/17-dealer-flow-not-retail.md) — options flow is dealer hedging, not retail direction.
 - [`../pitfalls/20-post-earnings-momentum-vs-fade.md`](../pitfalls/20-post-earnings-momentum-vs-fade.md) · [`../pitfalls/21-event-iv-vs-demand-iv.md`](../pitfalls/21-event-iv-vs-demand-iv.md) — pull flow + check the catalyst clock before any "fade / IV crush" call.
+- [`../parent-order-flow-framework.md`](../parent-order-flow-framework.md) — the interpretation layer: map the flow read + trend + volatility into a named state (吸筹 / 派发 / 承接 / 风险释放) when the user asks *what the flow means*, not just what it is.
 - [`../gamma-framework.md`](../gamma-framework.md) — add GEX (`type=greek-exposure`) for dealer-positioning context when asked.
 - [`analysis.md`](analysis.md) — when the read turns into an actual trade decision.
