@@ -1,9 +1,9 @@
 ---
 type: Index
 title: Trade Knowledge Base — Bundle Root
-description: OKF v0.1 entry point for the curated trade knowledge bundle — frameworks, 27 pitfalls, case studies, command references.
+description: OKF v0.1 entry point for the curated trade knowledge bundle — frameworks, 29 pitfalls, case studies, command references.
 tags: [index, okf, bundle-root, trading]
-timestamp: 2026-06-13T00:00:00Z
+timestamp: 2026-07-30T04:30:00Z
 ---
 
 # Trade Knowledge Base
@@ -22,12 +22,13 @@ The curated, shared knowledge bundle behind the `trade` skill. It is an **[Open 
 | [`strategies.md`](strategies.md) | Framework | Structure-to-regime matching, the three axes (direction / vega / asymmetry), LEAPS stock replacement, setup checklist, position management. |
 | [`gamma-framework.md`](gamma-framework.md) | Framework | Dealer GEX + options chain + IV term + flow → multi-factor probability map. |
 | [`price-action-framework.md`](price-action-framework.md) | Framework | Orderbook microstructure mental model — why the same news lands differently. |
+| [`macro-framework.md`](macro-framework.md) | Framework | Macro judgment pipeline (宏观七环节) — seven questions, marginal driver → micro-to-macro → market-implied pricing → second derivative → price as evidence → cross-asset confirmation → expression & sizing; eight dashboard families mapped to this stack; eight output modes (晨报 / 复盘 / 周报 / 会诊 / 月报 / 13F / 背离 / 主题深度). |
 | [`overnight-futures-framework.md`](overnight-futures-framework.md) | Framework | Overnight index-futures (夜盘) attribution — session clock, three-complex divergence read, catalyst clock, scenario output, data-freshness caveats. |
 | [`parent-order-flow-framework.md`](parent-order-flow-framework.md) | Framework | Parent-order (母单) net-flow × volatility × trend state matrix — accumulation / momentum / distribution / capitulation / absorption, with measurement caveats. |
 
 ## Pitfalls
 
-**[`pitfalls/index.md`](pitfalls/index.md)** — 27 analytical biases (`Trading Pitfall`), one file per rule, with lookup-by-trade-type. Load individual `pitfalls/NN-*.md` files when a matching situation arises.
+**[`pitfalls/index.md`](pitfalls/index.md)** — 29 analytical biases (`Trading Pitfall`), one file per rule, with lookup-by-trade-type. Load individual `pitfalls/NN-*.md` files when a matching situation arises.
 
 ## Case studies
 

@@ -29,11 +29,15 @@ plugins/
           strategies.md         # Always-relevant framework
           gamma-framework.md
           price-action-framework.md
-          pitfalls/             # 27 trading pitfalls + index.md (one file per rule)
-          ticker/               # Case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981) + index.md
+          macro-framework.md    # 宏观七环节 — macro judgment pipeline + dashboard families + output modes
+          overnight-futures-framework.md
+          parent-order-flow-framework.md
+          pitfalls/             # 29 trading pitfalls + index.md (one file per rule)
+          ticker/               # Case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ) + index.md
           commands/             # Subcommand reference files (impeccable pattern)
             setup.md            # /trade setup workflow
             import.md           # /trade import workflow
+            report.md           # /trade report workflow (daily 资金流向 read)
             analysis.md         # default analysis preflight + situation→reference map
             templates/          # Files copied into the user's knowledge dir by /trade setup
               knowledge-index.md

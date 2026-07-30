@@ -1,12 +1,13 @@
 # Trade
 
-Multi-leg options trading assistant — concrete strikes, IV-aware structures, probability-weighted scenarios. Single skill with three subcommands, modeled on the [`pbakaus/impeccable`](https://github.com/pbakaus/impeccable) pattern.
+Multi-leg options trading assistant — concrete strikes, IV-aware structures, probability-weighted scenarios. Single skill with four subcommands, modeled on the [`pbakaus/impeccable`](https://github.com/pbakaus/impeccable) pattern.
 
 ## Commands
 
 ```
 /trade setup                           # scaffold a personal knowledge directory
-/trade import <file_path>              # parse one PDF / screenshot / text artifact into YAML
+/trade import <file_path | url>        # parse one PDF / screenshot / text artifact into YAML, or digest shared research
+/trade report [tickers | basket]       # today's capital-flow / 资金流向 read
 /trade analysis [ticker | situation]   # default — trade analysis flow
 /trade <natural language>              # any unrecognized first word routes to analysis
 ```
@@ -45,23 +46,27 @@ Full trigger list in the `description` field of `SKILL.md`.
 | `references/strategies.md` | Structure-to-regime matching, LEAPS stock replacement, setup checklist, position management |
 | `references/gamma-framework.md` | Dealer GEX + options chain + IV term + flow → multi-factor probability map |
 | `references/price-action-framework.md` | Orderbook microstructure mental model — buy/sell imbalance, vacuum zones, consensus shifts |
+| `references/macro-framework.md` | Macro judgment pipeline (宏观七环节) — 定价先于预测, marginal driver, micro-to-macro, second derivative, cross-asset confirmation, expression & sizing; 8 dashboard families + 8 output modes (晨报 / 复盘 / 周报 / 月报 …) |
+| `references/overnight-futures-framework.md` | Overnight index-futures (夜盘) attribution — session clock, three-complex divergence read, catalyst clock |
+| `references/parent-order-flow-framework.md` | Parent-order (母单) net-flow × vol × trend state matrix — 吸筹 / 动量 / 派发 / 承接 / 隐性派发 |
 
 ### Subcommand references (lazy-loaded by the router)
 
 | File | Subcommand |
 |---|---|
 | `references/commands/setup.md` | `/trade setup` workflow |
-| `references/commands/import.md` | `/trade import` workflow (raw artifact → YAML) |
+| `references/commands/import.md` | `/trade import` workflow (raw artifact → YAML; shared research → writedown digest) |
+| `references/commands/report.md` | `/trade report` workflow (daily 资金流向 read) |
 | `references/commands/analysis.md` | Default analysis preflight + situation → reference map |
 
 ### Lazy-loaded library
 
 | File | Description |
 |---|---|
-| `references/pitfalls/README.md` | Index of 21 trading pitfalls (severity-tagged, lookup by trade type) |
+| `references/pitfalls/index.md` | Index of 29 trading pitfalls (severity-tagged, lookup by trade type) |
 | `references/pitfalls/NN-*.md` | One file per pitfall — loaded only when relevant |
-| `references/ticker/README.md` | Index of closed trade case studies |
-| `references/ticker/<name>.md` | One file per case study (INTC, Mag-7, APP, NOK, TSEM, CBRS) |
+| `references/ticker/index.md` | Index of closed trade case studies |
+| `references/ticker/<name>.md` | One file per case study (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ) |
 
 ### Templates (used by `/trade setup`)
 
@@ -74,7 +79,7 @@ Full trigger list in the `description` field of `SKILL.md`.
 
 ## Coverage
 
-- 21 analytical pitfalls covering consensus anchoring, flow misreading, IV crush traps, T+1 reverse drift, LEAPS vega tax, manipulator-tape recognition, channel-check sample bias, AH order-book fades, demand-IV vs event-IV, vega-axis sanity checks, and more.
-- 6 detailed case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS) showing thesis evolution, structure selection, and post-mortem lessons.
+- 29 analytical pitfalls covering consensus anchoring, flow misreading, IV crush traps, T+1 reverse drift, LEAPS vega tax, manipulator-tape recognition, channel-check sample bias, AH order-book fades, demand-IV vs event-IV, vega-axis sanity checks, retest entry confirmation, macro-right/trade-wrong, second-derivative reading, and more.
+- 13 detailed case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ) showing thesis evolution, structure selection, and post-mortem lessons.
 - Structure-to-regime quick reference covering high/low IV regimes paired with directional / neutral / manipulator-tape views.
 - Personal-knowledge layer for the user's own substack / X / writedown collection, auto-loaded on every analysis.
