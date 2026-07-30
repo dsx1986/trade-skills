@@ -29,7 +29,7 @@ plugins/
           strategies.md         # Always-relevant framework
           gamma-framework.md
           price-action-framework.md
-          macro-framework.md    # 宏观七环节 — macro judgment pipeline + dashboard families + output modes
+          macro-framework.md    # Macro judgment pipeline + dashboard families + output modes
           overnight-futures-framework.md
           parent-order-flow-framework.md
           pitfalls/             # 29 trading pitfalls + index.md (one file per rule)
@@ -37,7 +37,7 @@ plugins/
           commands/             # Subcommand reference files (impeccable pattern)
             setup.md            # /trade setup workflow
             import.md           # /trade import workflow
-            report.md           # /trade report workflow (daily 资金流向 read)
+            report.md           # /trade report workflow (daily capital-flow read)
             analysis.md         # default analysis preflight + situation→reference map
             templates/          # Files copied into the user's knowledge dir by /trade setup
               knowledge-index.md

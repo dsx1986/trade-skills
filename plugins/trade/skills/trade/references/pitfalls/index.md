@@ -41,7 +41,7 @@ timestamp: 2026-07-30T04:30:00Z
 | 25 | HIGH | VIX options price off VIX futures, not spot — contango bleed, sub-1 futures beta, and the debit-spread skew bite | `25-vix-options-futures-mechanics.md` |
 | 26 | HIGH | Stock-based deal consideration — verify share-anchored vs dollar-anchored (and the split basis) before pricing flow-through | `26-stock-consideration-share-vs-dollar-anchored.md` |
 | 27 | HIGH | A pullback entry is the confirmed HOLD, not the touch — a retest probes who holds the level; quantify extension first; don't chase a blow-off wick | `27-retest-entry-confirmation.md` |
-| 28 | HIGH | A correct macro call ≠ a profitable trade — four independent kill switches: already priced, no dated catalyst (carry bleed), contaminated expression, vol-inappropriate size | `28-macro-right-trade-wrong.md` |
+| 28 | HIGH | A correct macro call is not a profitable trade — four independent kill switches: already priced, no dated catalyst (carry bleed), contaminated expression, vol-inappropriate size | `28-macro-right-trade-wrong.md` |
 | 29 | HIGH | Read the second derivative, not the level — "weak but improving" beats "strong but decelerating"; separate level / direction / acceleration / surprise breadth / persistence / priced | `29-second-derivative-not-level.md` |
 
 ## Quick Lookup by Trade Type
@@ -64,9 +64,9 @@ timestamp: 2026-07-30T04:30:00Z
 - **Multi-week thematic re-rate / sector co-move**: **20**, **21**, **24**
 - **Pattern recognition vs flow data check**: **20**, **21** (always pull data before applying pattern)
 - **Macro framing / yield narratives**: **22** (yield moves are a symptom, not a cause), **28**, **29** — also see [`../macro-framework.md`](../macro-framework.md)
-- **Trading a macro view / 宏观判断落地成仓位**: **28** (already-priced / no catalyst / contaminated expression / oversized — four separate no-trade gates), **19**, **24**
+- **Turning a macro view into a position**: **28** (already priced / no catalyst / contaminated expression / oversized — four separate no-trade gates), **19**, **24**
 - **Reading a data print (CPI, NFP, revisions, flow) / regime turn**: **29** (level ≠ direction ≠ acceleration; single-line surprise ≈ no signal; classify persistence), **01**
-- **晨报 / 收盘复盘 / 周报 / 月报 / macro regime review**: **28**, **29**, **22** — output order in [`../macro-framework.md`](../macro-framework.md) §9
+- **Morning note / EOD review / weekly / monthly regime review**: **28**, **29**, **22** — output order in [`../macro-framework.md`](../macro-framework.md) §9
 - **VIX / volatility hedge / "short the market" via VIX**: **25** (anchor to the future not spot; contango bleed; beta<1; debit-spread skew bite) — also see [`../strategies.md`](../strategies.md) VIX section + [`../ticker/vix-2026-06.md`](../ticker/vix-2026-06.md)
 - **High-conviction bull (channel confluence + thematic re-rate)**: **24** — banned: Jade Lizard, IC, Calendar; required: bull put spread, naked short put, risk reversal, long call
 - **M&A / merger-arb / sum-of-parts / stock-consideration / holdco-stub valuation**: **26** (share-anchored vs dollar-anchored — fixed reference price = fixed share count = marks to market; normalize the split basis; cross-check the tape) — also see [`../ticker/sats-2026-06.md`](../ticker/sats-2026-06.md)
