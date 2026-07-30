@@ -48,7 +48,7 @@ Every concept file carries a YAML frontmatter block. OKF v0.1 requires only `typ
 |---|---|---|
 | `Trading Pitfall` | analytical-bias rule | `pitfalls/NN-*.md` |
 | `Trade Case Study` | closed/in-progress trade post-mortem | `ticker/*.md` |
-| `Framework` | always-relevant decision framework | `strategies.md`, `gamma-framework.md`, `price-action-framework.md` |
+| `Framework` | always-relevant decision framework | `strategies.md`, `gamma-framework.md`, `price-action-framework.md`, `overnight-futures-framework.md`, `parent-order-flow-framework.md`, `macro-framework.md` |
 | `Command Reference` | subcommand workflow | `commands/*.md` |
 | `Index` | directory navigation index | `index.md` (every directory) |
 | `Changelog` | chronological change history | `log.md` |
