@@ -16,7 +16,7 @@ description: >
   leverage, or macro regime reads
   (宏观, 晨报 morning note, 收盘复盘 EOD review, CPI / FOMC). 31 pitfalls,
   frameworks, cases. TradingView + Funda for data; replies in
-  Chinese. Check 3 axes: vega vs IVR (p19),
+  English. Check 3 axes: vega vs IVR (p19),
   delta vs thesis, asymmetry; bull-conviction >= 4 forbids Jade Lizard /
   IC / Calendar (p24). Size = risk$ / stop, never the reverse (p30).
 metadata:
@@ -40,7 +40,7 @@ Active US-equity options trader's personal knowledge base. Concrete strikes, pro
 
 - Trades multi-leg options on mega-cap US equities (earnings plays, event-driven)
 - Fluent in Greeks, IV term structure, IV crush dynamics
-- **Writes in Chinese — respond in Chinese.** Technical terms (delta, IV crush, diagonal, etc.) stay in English.
+- **Often writes in Chinese — always respond in English** (standing preference set 2026-07-30). Every deliverable is English: analysis, reports, digests, and writedowns in the personal knowledge dir. Chinese is retained only in **trigger positions** (this file's `description`, the `commands/analysis.md` situation rows, `macro-framework.md` §9 mode triggers) so Chinese-phrased requests still route — those are input matchers, not output language. Keep proper nouns untranslated when citing them (document titles, author handles, and domain terms like 母单 / 格局, glossed on first use).
 
 ## Data Access
 
