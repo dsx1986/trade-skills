@@ -10,6 +10,12 @@ timestamp: 2026-06-13T00:00:00Z
 
 OKF reserved `log.md` — chronological history of this knowledge bundle, most recent first. Seeded from git history; append a dated entry whenever you add or materially revise a concept (see [`OKF.md`](OKF.md) conformance checklist).
 
+## 2026-07-30 — Response language switched to English (standing preference)
+
+- The user set a standing preference: **all output is English from now on**, even when the request is written in Chinese. Updated [`../SKILL.md`](../SKILL.md) User Profile (was "Writes in Chinese — respond in Chinese") and `description` (`replies in Chinese` → `English`), [`commands/import.md`](commands/import.md) step 4 (digests are written in English; pre-2026-07-30 writedowns stay Chinese — match their structure, don't rewrite them), [`commands/report.md`](commands/report.md) (respond in English; the output table's column headers are now English), and the [`macro-framework.md`](macro-framework.md) §9 preamble.
+- **Chinese is deliberately retained in trigger positions only** — the `SKILL.md` description, the `commands/analysis.md` situation rows, and the §9 mode-trigger column. Those are **input matchers**, not output language: removing them would silently break routing for Chinese-phrased requests. This extends the convention recorded in the 2026-07-30 macro entry below rather than replacing it.
+- Untranslated on purpose when citing: document titles, author handles, and domain terms with no clean English equivalent (母单, 格局, 散户 / 大单 / 机构) — gloss on first use.
+
 ## 2026-07-30 — Risk-management pitfalls 30–31 (sizing causality + session/drawdown governors)
 
 - Added [`pitfalls/30-stop-distance-determines-size.md`](pitfalls/30-stop-distance-determines-size.md) — the only correct causal order is **invalidation level → stop distance → size = risk$ ÷ (stop × point value)**. Fixing size first and back-solving the stop puts it at a volatility-arbitrary distance, usually inside the noise band; carries the **ATR-band table** (`< 0.2 ATR` = reject), a worked MNQ example (a $33k account at 2% risk trading "5 MNQ" implies a **66-point = 0.12 ATR** stop against NDX ATR(14) ≈ 560 pts, where correct size at a 0.5-ATR structural stop is **1 contract** — a 5× oversize, and 8.2× account leverage where one average day's range = 17% of equity), the **anti-martingale arithmetic** (under a fixed dollar cap, adding 2 contracts to a loser cuts remaining room from 130 points to 43), and the reminder that a % stop is a target rather than a floor once slippage is priced.
