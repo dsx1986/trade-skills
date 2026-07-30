@@ -1,14 +1,14 @@
 ---
 type: Index
 title: Trading Pitfalls — Index
-description: Lookup index for 29 analytical biases to avoid in directional/options trades; load individual files by trade type.
+description: Lookup index for 31 analytical and risk-management biases to avoid in directional/options/futures trades; load individual files by trade type.
 tags: [index, pitfalls, biases]
-timestamp: 2026-07-30T04:30:00Z
+timestamp: 2026-07-30T12:00:00Z
 ---
 
 # Trading Pitfalls
 
-29 analytical biases to avoid when evaluating directional/options trades. One file per rule, designed for lazy loading — read individual files only when relevant. This is the OKF navigable index for this directory; see [`../OKF.md`](../OKF.md) for the format, [`../index.md`](../index.md) for the bundle root.
+31 analytical and risk-management biases to avoid when evaluating directional/options/futures trades. One file per rule, designed for lazy loading — read individual files only when relevant. This is the OKF navigable index for this directory; see [`../OKF.md`](../OKF.md) for the format, [`../index.md`](../index.md) for the bundle root.
 
 ## Index
 
@@ -43,9 +43,16 @@ timestamp: 2026-07-30T04:30:00Z
 | 27 | HIGH | A pullback entry is the confirmed HOLD, not the touch — a retest probes who holds the level; quantify extension first; don't chase a blow-off wick | `27-retest-entry-confirmation.md` |
 | 28 | HIGH | A correct macro call is not a profitable trade — four independent kill switches: already priced, no dated catalyst (carry bleed), contaminated expression, vol-inappropriate size | `28-macro-right-trade-wrong.md` |
 | 29 | HIGH | Read the second derivative, not the level — "weak but improving" beats "strong but decelerating"; separate level / direction / acceleration / surprise breadth / persistence / priced | `29-second-derivative-not-level.md` |
+| 30 | HIGH | Stop distance is an INPUT from structure and volatility — position size is the OUTPUT; fixing size first buries the stop inside the noise band (<0.2 ATR), and averaging down under a fixed cap shrinks the remaining stop | `30-stop-distance-determines-size.md` |
+| 31 | HIGH | A per-trade risk cap is not risk management — without a daily loss limit, a consecutive-loss halt, and drawdown-tiered de-gearing, N disciplined stops in a row still ruin the account | `31-daily-loss-limit-drawdown-governor.md` |
 
 ## Quick Lookup by Trade Type
 
+- **Position sizing / "how many contracts or shares" / where to put the stop / leverage check**: **30** (invalidation level → stop distance → size; reject any stop < 0.2 ATR; round size down; check notional ÷ equity and what one ATR day does to the account), **31**
+- **Futures / index-futures / intraday day-trading / 期货日内 / scalping a session**: **30**, **31** (both mandatory — micro-contract sizing and a day stop are the whole game) — also see [`../overnight-futures-framework.md`](../overnight-futures-framework.md)
+- **Averaging down / 摊平 / 扛单 / "add to lower the average cost" / martingale**: **30** (a fixed dollar cap means each add *shrinks* remaining stop distance: 130 pts → 43 pts), **4** (broken structure = exit, not an add), **13**
+- **Drawdown / losing streak / tilt / revenge trading / "how do I make it back"**: **31** (day stop = 2–3× per-trade risk; 3 straight losses → flat; de-gear at −5/−10/−15%; −30% needs +43%), **23**
+- **Reviewing a trading system, plan, or educational material for soundness**: **30** + **31** first (sizing causality and the missing day-level governor are the two most common structural defects), then **19**, **24**, **28**
 - **Earnings**: 5, 7, 9, 10, 11, **20**, **24**
 - **Directional / fundamental**: 1, 2, 3, 4, 19, **24**
 - **Volatile / manipulator tapes**: 12, 13, 15, **23**

@@ -2,23 +2,23 @@
 name: trade
 description: >
   Personal US-equity options trading KB.
-  `/trade setup` scaffolds a knowledge directory (substack, X,
-  writedowns); `/trade import [file]` parses one raw file (PDF,
+  `/trade setup` scaffolds a knowledge dir (substack, X,
+  writedowns); `/trade import [file]` parses a raw file (PDF,
   image, text) into YAML; `/trade report [tickers]`
-  reads today's capital flow / 资金流向 (散户 / 大单 / 机构
-  proxy from options premium-flow); `/trade analysis` (or any
-  unrecognized first word) runs the default flow, auto-loading
-  the knowledge dir. Use for earnings plays,
-  money-flow / 流入流出 / 母单吸筹·派发 checks, or ticker mentions (e.g., "analyze APP").
+  reads today's 资金流向 (散户/大单/机构 proxy from options
+  premium-flow); `/trade analysis` (or any unrecognized first
+  word) runs the default flow + knowledge dir. For earnings
+  plays, money-flow / 流入流出 / 母单吸筹·派发 checks, or ticker mentions.
   Triggers on multi-leg options (Jade Lizard, bull put spread, iron
   condor, diagonal, calendar), IV / IV crush, LEAPS / stock
   replacement, dealer GEX / gamma / options flow, VIX / vol hedging,
-  NQ / ES 夜盘 / overnight futures, or macro regime reads
-  (宏观, 晨报 morning note, 收盘复盘 EOD review, CPI / FOMC). 29 pitfalls,
-  frameworks, case studies. TradingView + Funda for data; replies in
+  NQ / ES 夜盘 / overnight futures, position sizing / 仓位 / 止损 /
+  leverage, or macro regime reads
+  (宏观, 晨报 morning note, 收盘复盘 EOD review, CPI / FOMC). 31 pitfalls,
+  frameworks, cases. TradingView + Funda for data; replies in
   Chinese. Check 3 axes: vega vs IVR (p19),
   delta vs thesis, asymmetry; bull-conviction >= 4 forbids Jade Lizard /
-  IC / Calendar (p24).
+  IC / Calendar (p24). Size = risk$ / stop, never the reverse (p30).
 metadata:
   okf_version: "0.1"
   okf_conformance: references/OKF.md
@@ -76,6 +76,7 @@ Do not substitute yfinance, web search, or guesses. The MCP's options-chain IV i
 8. Single big institutional order ≠ edge
 9. **Pricing before forecasting** — never call an outcome bullish/bearish before stating what the market already implies (pitfall 28)
 10. **Margin over level** — level, direction and acceleration are three different facts; "weak but improving" beats "strong but decelerating" (pitfall 29)
+11. **Stop distance sets size, never the reverse** — invalidation level → stop distance → `size = risk$ ÷ (stop × point value)`; a stop under 0.2 ATR is noise, and a per-trade cap without a daily loss limit is not risk management (pitfalls 30, 31)
 
 ## Structure-to-Regime Quick Reference
 
@@ -124,7 +125,7 @@ This knowledge base is an **[Open Knowledge Format (OKF) v0.1](references/OKF.md
 | [references/macro-framework.md](references/macro-framework.md) | Macro judgment pipeline: seven-question gate, marginal driver, micro-to-macro jigsaw, **pricing before forecasting** (implied-pricing → data-source map), the change in the change, price as evidence, cross-asset confirmation, expression and sizing. Plus the 8 dashboard families and 8 output modes (morning note / EOD review / weekly / pre-trade consult / monthly regime review / 13F / divergence watch / thematic deep dive). Load for macro regime reads, data prints, digesting a macro report, or turning a macro view into an expression. |
 | [references/overnight-futures-framework.md](references/overnight-futures-framework.md) | Overnight index-futures (夜盘) attribution — "what's driving NQ/ES right now". Session clock, three-complex divergence read, catalyst clock, scenarios, data-freshness caveats. |
 | [references/parent-order-flow-framework.md](references/parent-order-flow-framework.md) | Parent-order (母单) net-flow × volatility × trend state matrix — 吸筹 / 动量 / 派发 / 风险释放 / 承接·换手. Load when classifying who is buying vs selling, reading 母单/大单 net flow, or calling accumulation vs distribution. |
-| [references/pitfalls/index.md](references/pitfalls/index.md) | Index of 29 trading pitfalls — lookup by trade type. |
+| [references/pitfalls/index.md](references/pitfalls/index.md) | Index of 31 trading pitfalls — lookup by trade type. |
 | [references/pitfalls/NN-*.md](references/pitfalls/) | Individual pitfall rules — load when a relevant trade situation arises. The `analysis` reference has a full situation → pitfall map. |
 | [references/ticker/index.md](references/ticker/index.md) | Index of trade case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ). |
 | [references/ticker/&lt;name&gt;.md](references/ticker/) | Individual case study — load when the current setup pattern-matches a prior trade. |
