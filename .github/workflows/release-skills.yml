@@ -30,11 +30,15 @@ jobs:
             done
           done
 
-      - name: Create release
+      - name: Create or update release
         run: |
-          gh release create "${{ github.ref_name }}" dist/*.zip \
-            --title "v${{ steps.version.outputs.version }}" \
-            --generate-notes \
-            --latest
+          if gh release view "${{ github.ref_name }}" > /dev/null 2>&1; then
+            gh release upload "${{ github.ref_name }}" dist/*.zip --clobber
+          else
+            gh release create "${{ github.ref_name }}" dist/*.zip \
+              --title "v${{ steps.version.outputs.version }}" \
+              --generate-notes \
+              --latest
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
