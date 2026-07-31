@@ -52,6 +52,10 @@ The skill's knowledge base is an **[Open Knowledge Format (OKF) v0.1](plugins/tr
 
 Learn more about OKF: [Google Cloud announcement](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing/) · [spec & tooling](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/main/okf).
 
+## Bugs & Feature Requests
+
+For any bug report or feature request, please email [himself65@outlook.com](mailto:himself65@outlook.com) and include the project name (`trade-skills`) in the subject line.
+
 ## License
 
 MIT
