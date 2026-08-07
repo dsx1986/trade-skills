@@ -32,7 +32,7 @@ plugins/
           macro-framework.md    # Macro judgment pipeline + dashboard families + output modes
           overnight-futures-framework.md
           parent-order-flow-framework.md
-          pitfalls/             # 31 trading pitfalls + index.md (one file per rule)
+          pitfalls/             # 32 trading pitfalls + index.md (one file per rule)
           ticker/               # Case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ) + index.md
           commands/             # Subcommand reference files (impeccable pattern)
             setup.md            # /trade setup workflow

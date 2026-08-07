@@ -85,6 +85,7 @@ Always flag **earnings proximity** (from #2): a name reporting in days explains 
 
 ## Related
 
+- [`../pitfalls/32-multi-leg-share-before-block-direction.md`](../pitfalls/32-multi-leg-share-before-block-direction.md) — **read before ranking any block by premium**: spread legs print full premium with their own aggressor side, so an unfiltered tally manufactures a net direction that isn't there (a real case sign-flipped +$68.9M to $0.0M). Filter on `multi_leg_volume` and `stock_multi_leg_volume`.
 - [`../pitfalls/02-single-flow-not-smart-money.md`](../pitfalls/02-single-flow-not-smart-money.md) — one institutional order isn't edge.
 - [`../pitfalls/17-dealer-flow-not-retail.md`](../pitfalls/17-dealer-flow-not-retail.md) — options flow is dealer hedging, not retail direction.
 - [`../pitfalls/20-post-earnings-momentum-vs-fade.md`](../pitfalls/20-post-earnings-momentum-vs-fade.md) · [`../pitfalls/21-event-iv-vs-demand-iv.md`](../pitfalls/21-event-iv-vs-demand-iv.md) — pull flow + check the catalyst clock before any "fade / IV crush" call.
