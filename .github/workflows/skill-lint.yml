@@ -12,3 +12,15 @@ jobs:
       - uses: himself65/skill-lint@v3
         with:
           path: 'plugins'
+
+  # Keeps .claude-plugin/marketplace.json from silently drifting away from the
+  # plugin manifests. Release artifacts don't contain marketplace.json, so drift
+  # is invisible in a release but wrong for anyone running `npx plugins add`.
+  versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node .github/scripts/check-versions.mjs

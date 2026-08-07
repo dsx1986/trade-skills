@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "Personal options trading Claude Code plugin marketplace.",
   "scripts": {
-    "bump": "ccbump"
+    "bump": "ccbump",
+    "check:versions": "node .github/scripts/check-versions.mjs"
   },
   "packageManager": "pnpm@10.33.0",
   "devDependencies": {

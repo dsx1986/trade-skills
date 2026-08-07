@@ -98,6 +98,14 @@ Version lives in `plugins/trade/plugin.json`, not in SKILL.md frontmatter.
 - `.claude-plugin/marketplace.json` — marketplace listing.
 - `plugins/trade/plugin.json` — plugin manifest. The skill under `plugins/trade/skills/trade/` is auto-discovered via its `SKILL.md` frontmatter.
 
+**Version bumps must touch both files.** `plugins/trade/plugin.json` is the source of truth, and `.claude-plugin/marketplace.json` mirrors it in **two** places — `metadata.version` and `plugins[0].version`. They drift silently otherwise: the release workflow only packages the skill directories, so a stale marketplace.json never appears in a release artifact, but it *is* what `npx plugins add himself65/trade-skills` reads off the default branch (v2.4.0 and v2.5.0 both shipped with it pinned at 2.3.0). CI enforces this via the `versions` job in `.github/workflows/skill-lint.yml`; run it locally with:
+
+```bash
+pnpm check:versions
+```
+
+Release is tag-driven: merge to `main`, then push a `vX.Y.Z` tag matching `plugin.json` — `.github/workflows/release-skills.yml` zips each skill and creates the GitHub release.
+
 Users install via:
 
 ```bash
