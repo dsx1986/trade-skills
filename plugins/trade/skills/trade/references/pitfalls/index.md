@@ -1,14 +1,14 @@
 ---
 type: Index
 title: Trading Pitfalls — Index
-description: Lookup index for 31 analytical and risk-management biases to avoid in directional/options/futures trades; load individual files by trade type.
+description: Lookup index for 32 analytical and risk-management biases to avoid in directional/options/futures trades; load individual files by trade type.
 tags: [index, pitfalls, biases]
-timestamp: 2026-07-30T12:00:00Z
+timestamp: 2026-08-07T17:05:00Z
 ---
 
 # Trading Pitfalls
 
-31 analytical and risk-management biases to avoid when evaluating directional/options/futures trades. One file per rule, designed for lazy loading — read individual files only when relevant. This is the OKF navigable index for this directory; see [`../OKF.md`](../OKF.md) for the format, [`../index.md`](../index.md) for the bundle root.
+32 analytical and risk-management biases to avoid when evaluating directional/options/futures trades. One file per rule, designed for lazy loading — read individual files only when relevant. This is the OKF navigable index for this directory; see [`../OKF.md`](../OKF.md) for the format, [`../index.md`](../index.md) for the bundle root.
 
 ## Index
 
@@ -45,6 +45,7 @@ timestamp: 2026-07-30T12:00:00Z
 | 29 | HIGH | Read the second derivative, not the level — "weak but improving" beats "strong but decelerating"; separate level / direction / acceleration / surprise breadth / persistence / priced | `29-second-derivative-not-level.md` |
 | 30 | HIGH | Stop distance is an INPUT from structure and volatility — position size is the OUTPUT; fixing size first buries the stop inside the noise band (<0.2 ATR), and averaging down under a fixed cap shrinks the remaining stop | `30-stop-distance-determines-size.md` |
 | 31 | HIGH | A per-trade risk cap is not risk management — without a daily loss limit, a consecutive-loss halt, and drawdown-tiered de-gearing, N disciplined stops in a row still ruin the account | `31-daily-loss-limit-drawdown-governor.md` |
+| 32 | HIGH | Check the multi-leg share before reading direction off an options block — spread legs print full premium with their own aggressor side and manufacture a net direction that isn't there | `32-multi-leg-share-before-block-direction.md` |
 
 ## Quick Lookup by Trade Type
 
@@ -65,6 +66,7 @@ timestamp: 2026-07-30T12:00:00Z
 - **Chasing extension / parabolic name / blow-off candle / new-ATH long-upper-wick**: **27** (a wick-and-close-weak new high on volume is exhaustion, not an entry; the nearest real support can be −20% — quantify extension before waiting for a pullback to the MA)
 - **LEAPS / stock replacement**: 11, 16, 18, **21**, **23** (long horizons compound the termination hazard)
 - **Options market structure / dealer flow**: 17, **21** (also see [`../gamma-framework.md`](../gamma-framework.md))
+- **Reading 大单 / block flow, "who bought the big print", ranking blocks by premium**: **32** (filter `multi_leg` and `stock_multi_leg` share BEFORE reading direction — an unfiltered tally sign-flips), **02**, **17** — also see [`../parent-order-flow-framework.md`](../parent-order-flow-framework.md), [`../commands/report.md`](../commands/report.md)
 - **Vol-thesis reasoning**: 16, 19, **21**
 - **Credit vs debit at low/high IV**: 7, 19, **21**, **24**
 - **Post-earnings drift / continuation**: 9, 10, **20**
