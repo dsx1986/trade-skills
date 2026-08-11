@@ -26,7 +26,7 @@ Full trigger list in the `description` field of `SKILL.md`.
 
 ## Platform
 
-**CLI only** — primary market data via the headless TradingView MCP (`finance-data-providers:tradingview-mcp`, bundled server, no app/login); TradingView desktop reader (`finance-data-providers:tradingview-reader`) for options greeks / IV skew / watchlists / alerts; Funda AI API (`finance-data-providers:funda-data`) for fundamentals, options flow / GEX, transcripts, sentiment, etc.
+**CLI only** — **tier 0 (optional): Unusual Whales**, used directly when the user has a subscription, for options flow, dark pool, dealer GEX, IV rank and intraday net-premium ticks (see `references/unusual-whales.md`); then the headless TradingView MCP (`finance-data-providers:tradingview-mcp`, bundled server, no app/login); TradingView desktop reader (`finance-data-providers:tradingview-reader`) for watchlists / alerts / chart screenshots; Funda AI API (`finance-data-providers:funda-data`) for fundamentals, transcripts, supply chain, sentiment, and as the options flow / GEX fallback.
 
 ## Setup
 
@@ -35,7 +35,16 @@ Full trigger list in the `description` field of `SKILL.md`.
    ```bash
    export FUNDA_API_KEY="your-funda-api-key"
    ```
-3. (Optional) Run `/trade setup` once to scaffold a personal knowledge directory for substack posts, X / twitter threads, and writedowns.
+3. (Optional) If you have an [Unusual Whales](https://unusualwhales.com/public-api) API subscription, set the key — the skill then uses UW directly as tier 0 for flow / dark pool / GEX / IV rank:
+   ```bash
+   export UNUSUAL_WHALES_API_KEY="your-uw-api-key"
+   ```
+   Or wire up their MCP server instead:
+   ```bash
+   claude mcp add --transport http unusual-whales https://api.unusualwhales.com/api/mcp --header "Authorization: Bearer $UNUSUAL_WHALES_API_KEY"
+   ```
+   Without either, this tier is skipped and options flow falls back to Funda.
+4. (Optional) Run `/trade setup` once to scaffold a personal knowledge directory for substack posts, X / twitter threads, and writedowns.
 
 ## Reference Files
 
@@ -49,6 +58,7 @@ Full trigger list in the `description` field of `SKILL.md`.
 | `references/macro-framework.md` | Macro judgment pipeline — pricing before forecasting, marginal driver, micro-to-macro, second derivative, cross-asset confirmation, expression & sizing; 8 dashboard families + 8 output modes (morning note / EOD review / weekly / monthly …) |
 | `references/overnight-futures-framework.md` | Overnight index-futures attribution — session clock, three-complex divergence read, catalyst clock |
 | `references/parent-order-flow-framework.md` | Parent-order net-flow × vol × trend state matrix — accumulation / momentum / distribution / absorption / covert distribution |
+| `references/unusual-whales.md` | Data Access tier 0 — direct Unusual Whales access when subscribed: availability gate, MCP + REST auth, endpoint map, entitlement gaps, field traps |
 
 ### Subcommand references (lazy-loaded by the router)
 

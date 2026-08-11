@@ -26,6 +26,12 @@ The curated, shared knowledge bundle behind the `trade` skill. It is an **[Open 
 | [`overnight-futures-framework.md`](overnight-futures-framework.md) | Framework | Overnight index-futures (夜盘) attribution — session clock, three-complex divergence read, catalyst clock, scenario output, data-freshness caveats. |
 | [`parent-order-flow-framework.md`](parent-order-flow-framework.md) | Framework | Parent-order (母单) net-flow × volatility × trend state matrix — accumulation / momentum / distribution / capitulation / absorption, with measurement caveats. |
 
+## Data sources
+
+| File | Type | What it covers |
+|---|---|---|
+| [`unusual-whales.md`](unusual-whales.md) | Data Source | Direct Unusual Whales access when the user has a subscription (Data Access **tier 0**) — availability gate, MCP + REST auth, endpoint map by trading question, entitlement gaps (volatility add-on, congress, futures), and verified field traps. Load it before writing any UW request; skip the tier entirely when no key resolves. |
+
 ## Pitfalls
 
 **[`pitfalls/index.md`](pitfalls/index.md)** — 32 analytical and risk-management biases (`Trading Pitfall`), one file per rule, with lookup-by-trade-type. Load individual `pitfalls/NN-*.md` files when a matching situation arises.

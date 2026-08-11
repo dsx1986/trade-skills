@@ -4,18 +4,18 @@ description: >
   Personal US-equity options trading KB.
   `/trade setup` scaffolds a knowledge dir (substack, X,
   writedowns); `/trade import [file]` parses a raw file (PDF,
-  image, text) into YAML; `/trade report [tickers]`
-  reads today's 资金流向 (散户/大单/机构 proxy from options
-  premium-flow); `/trade analysis` (or any unrecognized first
-  word) runs the default flow + knowledge dir. For earnings
+  image) into YAML; `/trade report [tickers]`
+  reads today's 资金流向 (散户/大单/机构 from options + dark-pool
+  flow); `/trade analysis` (or any unknown first
+  word) runs the default flow. For earnings
   plays, money-flow / 流入流出 / 母单吸筹·派发 checks, or ticker mentions.
   Triggers on multi-leg options (Jade Lizard, bull put spread, iron
   condor, diagonal, calendar), IV / IV crush, LEAPS / stock
-  replacement, dealer GEX / gamma / options flow, VIX / vol hedging,
+  replacement, dealer GEX / gamma / options flow / dark pool, VIX / vol hedging,
   NQ / ES 夜盘 / overnight futures, position sizing / 仓位 / 止损 /
   leverage, or macro regime reads
   (宏观, 晨报 morning note, 收盘复盘 EOD review, CPI / FOMC). 32 pitfalls,
-  frameworks, cases. TradingView + Funda for data; user-language
+  frameworks, cases. Unusual Whales / TradingView / Funda data; user-language
   replies, English files. 3 axes: vega vs IVR (p19), delta,
   asymmetry; bull-conviction >= 4 forbids Jade Lizard /
   IC / Calendar (p24). Size = risk$ / stop, never reversed (p30).
@@ -44,15 +44,17 @@ Active US-equity options trader's personal knowledge base. Concrete strikes, pro
 
 ## Data Access
 
-Three tiers, in order:
+**Tier 0 — Unusual Whales, only when the user has a subscription.** If a UW MCP server is in the session, or `UNUSUAL_WHALES_API_KEY` resolves (env → repo-root `.env` → the knowledge dir's repo `.env`), UW is the **first** stop for options flow, dark pool, dealer GEX, IV rank, and intraday net-premium ticks — it is the upstream source behind the Funda options fields, queried directly instead of through a proxy. Load [references/unusual-whales.md](references/unusual-whales.md) for the availability gate, auth headers (`UW-CLIENT-API-ID: 100001` is required), endpoint map, and entitlement traps. **No key → this tier does not exist**: fall back to the three below and say which proxy the read is built on. Never present a UW-only dataset (dark pool, market tide, multi-leg legs) as available when it isn't.
 
-1. **TradingView MCP (`finance-data-providers:tradingview-mcp`) FIRST** for quotes, TA readouts / indicator ratings, multi-timeframe alignment, screeners / scans, gainers / losers, futures (NQ / ES 夜盘 overview + movers), pre/after-market prices, unusual options activity, and quick options-chain looks. Headless — no desktop app, no login, no CDP relaunch that closes the user's charts.
-2. **TradingView desktop reader (`finance-data-providers:tradingview-reader`)** when you need what the MCP can't give: options chain **with greeks** (delta / gamma / theta / vega), per-strike IV skew, expiries with contract counts, watchlists, alerts, TV news, chart screenshots.
-3. **Funda AI API (`finance-data-providers:funda-data`)** for everything fundamental or flow-based: fundamentals, filings, transcripts, analyst estimates, options premium flow / GEX (the `report` command's backbone), supply chain, sentiment, Polymarket, congressional trades, economics.
+Then, in order:
 
-Do not substitute yfinance, web search, or guesses. The MCP's options-chain IV is Yahoo-sourced — fine for chain shape / OI / volume, not for IV-rank or skew decisions (use tier 2 or 3 for those).
+1. **TradingView MCP (`finance-data-providers:tradingview-mcp`) FIRST** for quotes, TA readouts / indicator ratings, multi-timeframe alignment, screeners / scans, gainers / losers, futures (NQ / ES 夜盘 overview + movers — UW futures endpoints 500, so 夜盘 stays here), pre/after-market prices, unusual options activity, and quick options-chain looks. Headless — no desktop app, no login, no CDP relaunch that closes the user's charts.
+2. **TradingView desktop reader (`finance-data-providers:tradingview-reader`)** when you need what the MCP can't give: options chain **with greeks** (delta / gamma / theta / vega), per-strike IV skew, expiries with contract counts, watchlists, alerts, TV news, chart screenshots. With tier 0 live, most greeks / skew pulls no longer need this trip.
+3. **Funda AI API (`finance-data-providers:funda-data`)** for everything fundamental or flow-based: fundamentals, filings, transcripts, analyst estimates, options premium flow / GEX (the `report` command's fallback backbone), supply chain, sentiment, Polymarket, congressional trades, economics.
 
-**Credentials live in the root repo `.env`, not the worktree.** When running inside a worktree (path matches `.claude/worktrees/*`), the worktree itself has no `.env` — resolve to the main repo's `.env` by stripping the `.claude/worktrees/<name>` suffix from the current working directory.
+Do not substitute yfinance, web search, or guesses. The MCP's options-chain IV is Yahoo-sourced — fine for chain shape / OI / volume, not for IV-rank or skew decisions (use UW `iv-rank`, or tier 2 / 3).
+
+**Credentials live in the root repo `.env`, not the worktree.** When running inside a worktree (path matches `.claude/worktrees/*`), the worktree itself has no `.env` — resolve to the main repo's `.env` by stripping the `.claude/worktrees/<name>` suffix from the current working directory. `UNUSUAL_WHALES_API_KEY` may instead live in the personal knowledge dir's repo — see the resolution order in [references/unusual-whales.md](references/unusual-whales.md) §1.
 
 ## Response Rules
 
@@ -125,6 +127,7 @@ This knowledge base is an **[Open Knowledge Format (OKF) v0.1](references/OKF.md
 | [references/macro-framework.md](references/macro-framework.md) | Macro judgment pipeline: seven-question gate, marginal driver, micro-to-macro jigsaw, **pricing before forecasting** (implied-pricing → data-source map), the change in the change, price as evidence, cross-asset confirmation, expression and sizing. Plus the 8 dashboard families and 8 output modes (morning note / EOD review / weekly / pre-trade consult / monthly regime review / 13F / divergence watch / thematic deep dive). Load for macro regime reads, data prints, digesting a macro report, or turning a macro view into an expression. |
 | [references/overnight-futures-framework.md](references/overnight-futures-framework.md) | Overnight index-futures (夜盘) attribution — "what's driving NQ/ES right now". Session clock, three-complex divergence read, catalyst clock, scenarios, data-freshness caveats. |
 | [references/parent-order-flow-framework.md](references/parent-order-flow-framework.md) | Parent-order (母单) net-flow × volatility × trend state matrix — 吸筹 / 动量 / 派发 / 风险释放 / 承接·换手. Load when classifying who is buying vs selling, reading 母单/大单 net flow, or calling accumulation vs distribution. |
+| [references/unusual-whales.md](references/unusual-whales.md) | Direct Unusual Whales access (Data Access tier 0). Load whenever a UW key / MCP is available and the question needs options flow, dark pool, dealer GEX, IV rank, intraday net-premium ticks, or exact multi-leg de-contamination — it carries the availability gate, endpoint map, entitlement gaps, and field traps. |
 | [references/pitfalls/index.md](references/pitfalls/index.md) | Index of 32 trading pitfalls — lookup by trade type. |
 | [references/pitfalls/NN-*.md](references/pitfalls/) | Individual pitfall rules — load when a relevant trade situation arises. The `analysis` reference has a full situation → pitfall map. |
 | [references/ticker/index.md](references/ticker/index.md) | Index of trade case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ). |
