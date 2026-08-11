@@ -12,6 +12,8 @@ Multi-factor confluence framework using dealer gamma, options chain structure, I
 
 **Critical rule**: This framework outputs **probability + key levels**, not direction predictions. Use it to **size and structure** trades, not to decide direction. Direction comes from tape + catalysts. Inverting this — letting gamma decide direction — fades dealer hedge flow with retail-style "market structure" interpretation.
 
+**Where the numbers come from**: with an Unusual Whales key ([`unusual-whales.md`](unusual-whales.md)), pull per-strike exposure from `/api/stock/{t}/spot-exposures/strike` (gamma · vanna · charm · delta, split `*_oi` vs `*_vol`), the flip and wall levels from `/api/stock/{t}/gex-levels`, term shape from `/greek-exposure/expiry`, and the pin candidates from `/max-pain` + `/oi-per-strike`. State whether a reading is OI-based or session-volume-based — on heavy-flow days they disagree. Without a UW key, Funda `type=greek-exposure` is the fallback and is coarser.
+
 ---
 
 ## Signal Effectiveness Triage
