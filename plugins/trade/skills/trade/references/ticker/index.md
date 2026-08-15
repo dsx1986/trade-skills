@@ -27,6 +27,7 @@ One file per closed trade arc. Designed for lazy loading — the index lists tic
 | 6981 | AI-MLCC parabolic run / new-ATH blow-off | 2026-06-18 | no trade (entry-timing study) | **Entry timing = the volume-confirmed retest-HOLD at a Schelling-point zone, not the touch — and not the blow-off close.** Murata ran ~6x in a year and printed a new-ATH long-upper-wick on 174% volume (close in the bottom 3% of range, +187% over its 200-day). The nearest real support (EMA21) is −23%, so a pullback to the MA is a *correction*, not a shallow dip — quantify extension and ladder ① ¥11,100 / ② ¥10,100 / ③ ¥9,100, each only on a volume-contraction hold. OSE options need IBKR. | `6981-2026-06.md` |
 | MU | FY26Q3 earnings (memory supercycle) | 2026-06-24 (in-progress) | analyst-error corrected mid-thread | **Post-print, called "sell-the-news" off an early AH snapshot (+3.6% @ 16:05 ET) + full-day flow (−$3.4M); AH then accelerated to +9% and post-event flow was +$72.5M bullish → flipped back to bull.** Sample the AH price *trend* not a snapshot; use *post-event* flow not full-day; reaction-magnitude ("muted vs the beat") ≠ direction. Pre-print Stage-1 bull put spread + call tail was correct and validated. Sister to NOK 2026-04. | `mu-2026-06.md` |
 | NQ | Overnight Globex session ahead of GOOGL/TSLA/IBM + SK Hynix (7/22) | 2026-07-22 | analysis-only; base scenario (range 29,150–29,350) played out | **The three-complex divergence pattern IS the attribution**: NQ −0.3% + KOSPI +5.9% + gold/oil bid = energy/inflation drag, not risk-off. Overnight drivers decay (KOSPI floor +5.9% → +4.3% in 3h — re-read mid-session); convert foreign catalyst dates to ET before saying "nothing tonight" (Hynix "7/22 KST" = inside the US night); verify anomalous index prints against daily history before publishing. Worked example of `../overnight-futures-framework.md`. | `nq-2026-07.md` |
+| NBIS | Q2 2026 earnings (BMO) + pending municipal site-plan hearing | 2026-08-13 (in-progress) | profit (position); analyst-side distribution miss | **Guidance "reaffirmed, not raised" was not the signal — the capacity-metric *definition* was.** Company guided the loosest stage of a contracted→connected→active→revenue funnel, clarified in Q&A that the reaffirmed target is *connected* power and goes active "throughout H1 next year," and **withheld** period-end active MW + the new product's revenue — the exact two numbers needed to compute realized unit economics. Stock +34% D0 vs ±13.2% implied (+49% in 4 sessions) on a **2027 unit-economics re-base** management said would *not* affect the guided year. Bull range missed by ~12% because single-name implied move doesn't price a **sector re-rate** (comp reported the night before, +19%). Also: non-disclosure as information; hedging-vs-bearish 6-point discriminator; short cost basis ≠ support; opportunistic ATM program = slope-flattener not crash. | `nbis-2026-08.md` |
 
 ## Quick Lookup by Pattern
 
@@ -69,6 +70,16 @@ One file per closed trade arc. Designed for lazy loading — the index lists tic
 - **Reaction magnitude ("muted vs the beat") ≠ direction**: `mu-2026-06.md`, `nok-2026-04.md`
 - **Memory / DRAM / HBM supercycle earnings play**: `mu-2026-06.md`
 - **Pre-print analysis right, post-print read wrong (then flipped back) — pattern published ahead of current data**: `mu-2026-06.md`, `nok-2026-04.md`
+- **Guidance reaffirmed but the metric *definition* moved (contracted → connected → active → revenue funnel)**: `nbis-2026-08.md`
+- **"What they didn't say" — non-disclosure as information / building a missing-metrics list into every earnings review**: `nbis-2026-08.md`
+- **Single-name implied move under-prices a SECTOR re-rate (close comp reported the night before)**: `nbis-2026-08.md`
+- **Reaffirmed guidance + re-based forward unit economics = bullish, not a ceiling**: `nbis-2026-08.md`
+- **Distinguishing hedging from directional bearish flow (6-point discriminator)**: `nbis-2026-08.md`
+- **Bought protection makes both tails slipperier (dealer negative gamma), not safer**: `nbis-2026-08.md`
+- **Short cost basis is NOT support / squeeze fuel is a one-time flow**: `nbis-2026-08.md`
+- **At-the-market equity program as a price-dependent overhang (slope-flattener, not crash) vs convertible hedging pressure**: `nbis-2026-08.md`
+- **Capacity-constrained infrastructure earnings (data centers / fabs / power) — funnel mapping framework**: `nbis-2026-08.md`
+- **Expiry chosen by catalyst calendar incl. municipal/regulatory dates screens miss**: `nbis-2026-08.md`
 - **"What's driving NQ/ES 夜盘 right now" — overnight index-futures attribution**: `nq-2026-07.md` (+ `../overnight-futures-framework.md`)
 - **Cross-asset divergence read (equity futures vs safe-havens vs Asia cash)**: `nq-2026-07.md`
 
