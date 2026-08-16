@@ -14,7 +14,7 @@ description: >
   replacement, dealer GEX / gamma / options flow / dark pool, VIX / vol hedging,
   NQ / ES 夜盘 / overnight futures, position sizing / 仓位 / 止损 /
   leverage, or macro regime reads
-  (宏观, 晨报 morning note, 收盘复盘 EOD review, CPI / FOMC). 32 pitfalls,
+  (宏观, 晨报 morning note, 收盘复盘 EOD review, CPI / FOMC). 33 pitfalls,
   frameworks, cases. Unusual Whales / TradingView / Funda data; user-language
   replies, English files. 3 axes: vega vs IVR (p19), delta,
   asymmetry; bull-conviction >= 4 forbids Jade Lizard /
@@ -128,7 +128,7 @@ This knowledge base is an **[Open Knowledge Format (OKF) v0.1](references/OKF.md
 | [references/overnight-futures-framework.md](references/overnight-futures-framework.md) | Overnight index-futures (夜盘) attribution — "what's driving NQ/ES right now". Session clock, three-complex divergence read, catalyst clock, scenarios, data-freshness caveats. |
 | [references/parent-order-flow-framework.md](references/parent-order-flow-framework.md) | Parent-order (母单) net-flow × volatility × trend state matrix — 吸筹 / 动量 / 派发 / 风险释放 / 承接·换手. Load when classifying who is buying vs selling, reading 母单/大单 net flow, or calling accumulation vs distribution. |
 | [references/unusual-whales.md](references/unusual-whales.md) | Direct Unusual Whales access (Data Access tier 0). Load whenever a UW key / MCP is available and the question needs options flow, dark pool, dealer GEX, IV rank, intraday net-premium ticks, or exact multi-leg de-contamination — it carries the availability gate, endpoint map, entitlement gaps, and field traps. |
-| [references/pitfalls/index.md](references/pitfalls/index.md) | Index of 32 trading pitfalls — lookup by trade type. |
+| [references/pitfalls/index.md](references/pitfalls/index.md) | Index of 33 trading pitfalls — lookup by trade type. |
 | [references/pitfalls/NN-*.md](references/pitfalls/) | Individual pitfall rules — load when a relevant trade situation arises. The `analysis` reference has a full situation → pitfall map. |
 | [references/ticker/index.md](references/ticker/index.md) | Index of trade case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ). |
 | [references/ticker/&lt;name&gt;.md](references/ticker/) | Individual case study — load when the current setup pattern-matches a prior trade. |

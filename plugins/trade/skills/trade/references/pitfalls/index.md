@@ -1,14 +1,14 @@
 ---
 type: Index
 title: Trading Pitfalls — Index
-description: Lookup index for 32 analytical and risk-management biases to avoid in directional/options/futures trades; load individual files by trade type.
+description: Lookup index for 33 analytical and risk-management biases to avoid in directional/options/futures trades; load individual files by trade type.
 tags: [index, pitfalls, biases]
 timestamp: 2026-08-07T17:05:00Z
 ---
 
 # Trading Pitfalls
 
-32 analytical and risk-management biases to avoid when evaluating directional/options/futures trades. One file per rule, designed for lazy loading — read individual files only when relevant. This is the OKF navigable index for this directory; see [`../OKF.md`](../OKF.md) for the format, [`../index.md`](../index.md) for the bundle root.
+33 analytical and risk-management biases to avoid when evaluating directional/options/futures trades. One file per rule, designed for lazy loading — read individual files only when relevant. This is the OKF navigable index for this directory; see [`../OKF.md`](../OKF.md) for the format, [`../index.md`](../index.md) for the bundle root.
 
 ## Index
 
@@ -46,6 +46,7 @@ timestamp: 2026-08-07T17:05:00Z
 | 30 | HIGH | Stop distance is an INPUT from structure and volatility — position size is the OUTPUT; fixing size first buries the stop inside the noise band (<0.2 ATR), and averaging down under a fixed cap shrinks the remaining stop | `30-stop-distance-determines-size.md` |
 | 31 | HIGH | A per-trade risk cap is not risk management — without a daily loss limit, a consecutive-loss halt, and drawdown-tiered de-gearing, N disciplined stops in a row still ruin the account | `31-daily-loss-limit-drawdown-governor.md` |
 | 32 | HIGH | Check the multi-leg share before reading direction off an options block — spread legs print full premium with their own aggressor side and manufacture a net direction that isn't there | `32-multi-leg-share-before-block-direction.md` |
+| 33 | HIGH | Compute the subject's share of the corpus before framing a conclusion around it — the ticker that started the inquiry is a convenience sample; measure its share and re-derive the corpus boundary instead of inheriting it from the question | `33-denominator-before-framing.md` |
 
 ## Quick Lookup by Trade Type
 
@@ -58,7 +59,9 @@ timestamp: 2026-08-07T17:05:00Z
 - **Directional / fundamental**: 1, 2, 3, 4, 19, **24**
 - **Volatile / manipulator tapes**: 12, 13, 15, **23**
 - **Exit / take-profit / optimal-stopping**: 13, **23** (hazard rate sets the exit threshold)
-- **Channel-check / fundamental research**: 14, **24** (confluence ≥ 3 aligned sources overrides single-source discount)
+- **Backtesting a KOL / scoring someone's call record / "how good is this analyst"**: **33** (score the full post history, not the calls being cited; rank by count AND by engagement before reading), **14**
+- **Post-mortem / 复盘 of your own book / "why did this trade fail"**: **33** (score the whole book over a comparable window, not the position that hurt), **31**, **13**
+- **Channel-check / fundamental research**: 14, **33**, **24** (confluence ≥ 3 aligned sources overrides single-source discount)
 - **Structure / vol regime**: 6, 7, 8, 18, 19, **21**, **24**
 - **Structure asymmetry / upside profile**: **24** (the third axis beyond direction + vega)
 - **Sentiment / sector mood**: 9, 10, **20**
