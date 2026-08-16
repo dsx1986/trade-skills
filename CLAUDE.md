@@ -34,7 +34,7 @@ plugins/
           overnight-futures-framework.md
           parent-order-flow-framework.md
           pitfalls/             # 32 trading pitfalls + index.md (one file per rule)
-          ticker/               # Case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ) + index.md
+          ticker/               # Case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ, NBIS) + index.md
           commands/             # Subcommand reference files (impeccable pattern)
             setup.md            # /trade setup workflow
             import.md           # /trade import workflow

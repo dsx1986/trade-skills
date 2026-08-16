@@ -38,7 +38,7 @@ The curated, shared knowledge bundle behind the `trade` skill. It is an **[Open 
 
 ## Case studies
 
-**[`ticker/index.md`](ticker/index.md)** — closed/in-progress trade post-mortems (`Trade Case Study`): INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ. Load when the current setup pattern-matches a prior trade.
+**[`ticker/index.md`](ticker/index.md)** — closed/in-progress trade post-mortems (`Trade Case Study`): INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ, NBIS. Load when the current setup pattern-matches a prior trade.
 
 ## Command references
 

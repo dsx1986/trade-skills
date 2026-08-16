@@ -1,7 +1,7 @@
 ---
 type: Index
 title: Ticker Case Studies — Index
-description: Lookup index of closed/in-progress trade post-mortems (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ); load full files by pattern.
+description: Lookup index of closed/in-progress trade post-mortems (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ, NBIS); load full files by pattern.
 tags: [index, case-studies, post-mortems]
 timestamp: 2026-06-13T00:00:00Z
 ---
