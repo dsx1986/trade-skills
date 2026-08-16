@@ -87,7 +87,7 @@ One file per closed trade arc. Designed for lazy loading — the index lists tic
 
 1. Copy [`_template.md`](_template.md) to `<ticker>-YYYY-MM.md`.
 2. Fill out the OKF frontmatter — `type: Trade Case Study`, `title`, `description`, `ticker`, `event`, `date`, `status`, `result`, `structures`, `tags` (YAML array), `timestamp` (ISO 8601). See [`../OKF.md`](../OKF.md) for the schema.
-3. Document the trade arc — Setup, Strategy Evolution by stage, Outcome, What Worked, What Got Wrong, Lessons, Reusable Framework.
+3. Document the trade arc using the canonical skeleton (fixed H2 order, `---` between sections): Setup → Strategy Evolution (by stage) → Outcome (bare heading; as-of qualifiers go in a bold first line) → What Worked → What I Got Wrong (Analyst Side) (with `### Meta-insight` at its end when there is one) → Lessons / Updates to Framework → optional tail sections in this order: Reusable Framework: `<Setup-Type>` Plays, Specific Data Points (For Reference), Open Questions / Followups, Cross-References, Updates Log. Pure method / analysis-only studies (no trade, no analyst error — e.g. `6981-2026-06.md`, `nq-2026-07.md`) omit What Worked / What I Got Wrong.
 4. Add a row to the index above.
 5. If the case yields new pitfalls, add files under [`../pitfalls/`](../pitfalls/index.md) and link them from this case study.
 6. Add a dated entry to [`../log.md`](../log.md).

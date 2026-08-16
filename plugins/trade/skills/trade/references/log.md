@@ -10,6 +10,12 @@ timestamp: 2026-06-13T00:00:00Z
 
 OKF reserved `log.md` — chronological history of this knowledge bundle, most recent first. Seeded from git history; append a dated entry whenever you add or materially revise a concept (see [`OKF.md`](OKF.md) conformance checklist).
 
+## 2026-08-16 — Case-study structure unified across `ticker/`
+
+- Normalized all 13 case studies to one canonical body skeleton (fixed H2 order, `---` between sections): Setup → Strategy Evolution (by stage) → Outcome (bare heading; as-of qualifiers as a bold first line) → What Worked → What I Got Wrong (Analyst Side) (with `### Meta-insight` at its end) → Lessons / Updates to Framework → optional tails in fixed order: Reusable Framework: `<Setup-Type>` Plays, Specific Data Points (For Reference), Open Questions / Followups, Cross-References, Updates Log. Pure method / analysis-only studies ([`ticker/6981-2026-06.md`](ticker/6981-2026-06.md), [`ticker/nq-2026-07.md`](ticker/nq-2026-07.md)) omit What Worked / What I Got Wrong by rule.
+- Content-preserving refactor — sections were renamed, reordered, and demoted, never rewritten; the few added sections (e.g. an explicit `Outcome` where a file lacked one) restate facts already in that file. Notable moves: CBRS's top "Actual Trade" headline section became its `Outcome`; Mag-7's "Framework Got Right/Wrong" / "Patterns to Watch" / "Updated Trading Rules" mapped onto What Worked / What I Got Wrong / Reusable Framework / Lessons; NOK's "Trade Arc" and SATS's "Analysis Evolution" became `Strategy Evolution`; `Related` / `Links` / in-Lessons cross-reference subsections consolidated into tail `## Cross-References` sections.
+- [`ticker/_template.md`](ticker/_template.md) now codifies the full skeleton (including the optional tails and the method-study rule); the contributor steps in [`ticker/index.md`](ticker/index.md) name the canonical order.
+
 ## 2026-08-15 — Pitfall 33 (denominator before framing)
 
 - Added [`pitfalls/33-denominator-before-framing.md`](pitfalls/33-denominator-before-framing.md) — the subject that starts an inquiry is a convenience sample; measure its share of the corpus and re-derive the corpus boundary before framing a conclusion. Case: a subscriber-chat study built three deliverables on a name that was 171 of 84,601 comments (0.20%, rank 36) while the corpus's actual centre of mass sat at 27.4%, and a trade ledger that inherited its start date from the question's frame omitted the subject's largest and best position (self-declared >16% weight, +49.0%).

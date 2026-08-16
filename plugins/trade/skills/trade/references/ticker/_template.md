@@ -16,6 +16,14 @@ timestamp: YYYY-MM-DDTHH:MM:SSZ
 
 One-paragraph trade arc summary including net result and the key structural lesson.
 
+<!--
+Canonical section skeleton. H2 order is fixed; separate every H2 section with a
+`---` rule. Sections marked (optional) are included only when content exists,
+in the order shown. "What Worked" / "What I Got Wrong (Analyst Side)" are
+required whenever there is an executed trade or an analyst-error record; a pure
+method / analysis-only study (no trade, no error post-mortem) omits both.
+-->
+
 ---
 
 ## Setup
@@ -44,6 +52,9 @@ One-paragraph trade arc summary including net result and the key structural less
 
 ## Outcome
 
+<!-- Heading stays exactly "Outcome" — put any as-of qualifier in a bold first
+     line, e.g. **As of 6/24 AH (T+1 unconfirmed).** -->
+
 - Print result
 - Stock reaction
 - P&L by leg
@@ -59,6 +70,11 @@ One-paragraph trade arc summary including net result and the key structural less
 
 1. ...
 
+### Meta-insight
+
+<!-- The cross-cutting takeaway, if any, always lives here — at the end of the
+     What I Got Wrong section. -->
+
 ---
 
 ## Lessons / Updates to Framework
@@ -70,4 +86,28 @@ One-paragraph trade arc summary including net result and the key structural less
 
 ## Reusable Framework: <Setup-Type> Plays
 
-Step-by-step framework for similar future setups.
+(optional) Step-by-step framework for similar future setups.
+
+---
+
+## Specific Data Points (For Reference)
+
+(optional) Raw flow / IV / tape numbers worth keeping but too heavy for the narrative sections.
+
+---
+
+## Open Questions / Followups
+
+(optional) Unresolved hypotheses, planned structures, forward catalyst dates.
+
+---
+
+## Cross-References
+
+(optional) Links to related pitfalls, frameworks, and sibling case studies.
+
+---
+
+## Updates Log
+
+(optional) Dated post-hoc amendments once the file is otherwise frozen.
