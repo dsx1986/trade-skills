@@ -14,6 +14,7 @@ It replaces the upstream skill's Unusual Whales + Funda tiers. Two consequences 
 
 1. **Several UW datasets were vendor-*computed*. Here they are *derived*** — dealer GEX, net premium flow, IV rank. The derivations are in §4 and they are honest approximations, not a vendor feed. Say so when you use one.
 2. **A few UW datasets have no substitute at all.** They are listed in §6. Never fill those gaps with an estimate.
+3. **Entitlement is not one block.** This plan covers options, equities, futures, Fed macro, and the partner feeds (news/earnings/analysts) — but **not indices**, which 403. Probe rather than assume: a plan that reaches futures tick data may still refuse `I:VIX`.
 
 ## 1. Availability gate — run before promising any Massive dataset
 
@@ -60,7 +61,7 @@ Paths verified against the live endpoint index. **Parameters are not listed here
 | **Condition / exchange code meanings** | `/v3/reference/conditions`, `/v3/reference/exchanges` | **Required** before reading conditions or inferring off-exchange (§4.4). |
 | **Equity quotes / bars / snapshot** | `/v3/snapshot`, `/v2/aggs/ticker/{t}/range/...`, `/v2/aggs/ticker/{t}/prev` | Day change, ATR, the price half of every setup. |
 | **Top gainers / losers** | `/v2/snapshot/locale/us/markets/stocks/{direction}` | Movers scan. Volume floor 10k; table clears 03:30 ET. |
-| **Indices (VIX curve)** | `/v3/snapshot/indices`, `/v2/aggs/ticker/{indicesTicker}/range/...` | `I:VIX`, `I:VIX9D`, `I:VIX3M`, `I:VIX6M`. **This closes the upstream skill's VIX gap** — UW 403'd the term structure on that plan. [`pitfalls/25-vix-options-futures-mechanics.md`](pitfalls/25-vix-options-futures-mechanics.md): still model P/L off the *future*, never spot. |
+| ~~Indices (VIX curve)~~ | ~~`/v3/snapshot/indices`~~ | **NOT ENTITLED on this plan — verified 2026-08-16, HTTP 403 `NOT_AUTHORIZED`.** `I:VIX` / `I:SPX` / `I:NDX` all fail. Do not route VIX or index-level work here; see §6. |
 | **Futures — NQ / ES 夜盘** | `/futures/v1/aggs/{ticker}`, `/futures/v1/trades/{ticker}`, `/futures/v1/contracts`, `/futures/v1/market-status` | **Also a gap closed** — UW's futures endpoints 500'd, so the upstream skill pinned 夜盘 to TradingView. A futures session opens the **evening before** its settle date: to load the session settling on date D, query `window_start` for D−1. [`overnight-futures-framework.md`](overnight-futures-framework.md) |
 | **Macro — yields, inflation, labor** | `/fed/v1/treasury-yields`, `/fed/v1/inflation`, `/fed/v1/inflation-expectations`, `/fed/v1/labor-market` | [`macro-framework.md`](macro-framework.md); [`pitfalls/29-second-derivative-not-level.md`](pitfalls/29-second-derivative-not-level.md) — read the change in the change, not the level. |
 | **Earnings dates + actual/estimate/surprise** | `/benzinga/v1/earnings`, `/tmx/v1/corporate-events` | The catalyst clock the Hard Rule requires before any "IV crush" call. `corporate-events` also carries dividends, splits, conferences, and a confirmed/pending status. |
@@ -87,9 +88,15 @@ GEX_strike   = Σ_calls GEX_contract − Σ_puts GEX_contract
 
 Do it server-side: `store_as` the chain, then `query_data` with a SQL `GROUP BY strike`. The Black-Scholes functions (`bs_gamma`, `bs_vanna`, `bs_volga`, `bs_delta`, `bs_theta`, `bs_vega`, `bs_rho`) are available through `apply` when you need a greek the snapshot didn't return, or a **what-if** greek at a hypothetical spot / IV — that is the piece the snapshot genuinely cannot give you.
 
-**The silent-truncation trap — verified live, 2026-08-16.** The snapshot omits the **entire greeks and IV block** for contracts with no recent trading (deep ITM, illiquid strikes): the columns are simply absent from those rows, not null. A naive `SUM(gamma × OI)` therefore drops those contracts **without erroring** and reports a GEX that is too small, with no sign anything was lost. Before publishing any aggregate: count the rows with a gamma against the total rows returned, and state the coverage. Where the missing contracts carry material OI, either fill their gamma with `apply`/`bs_gamma` (you have strike, expiry, spot, and can supply an IV) or say the map is bounded to the liquid strikes. This is the same class of defect as an unflagged truncation — the number looks complete precisely because nothing complained.
+**The silent-gap trap — measured on SPY, 2026-08-16.** The snapshot omits the **entire greeks and IV block** for some contracts: the columns are absent from those rows, so a naive `SUM(gamma × OI)` drops them **without erroring**.
 
-**Vintage mismatch:** in the same response, `last_quote_timeframe` can read `REAL-TIME` while `underlying_asset_timeframe` reads `DELAYED`. Since `S²` scales the whole GEX number, a delayed underlying quietly biases it. Check both timeframe fields and say which vintage the map is built on.
+The trigger is **lack of recent trading activity, not moneyness** — do not assume the gaps are harmlessly deep ITM. In the measured SPY 2026-08-21 chain the six gamma-less contracts sat 20–38 points from spot (2.7–4.9% away, i.e. near the money), and what they shared was near-zero `day_volume` (1, 27, 82, 166, 176). One of them (call 738) carried **2,339 OI** — a contract that close to spot has real gamma, so dropping it is a real omission.
+
+**Scale it before you worry about it, and say which case you're in.** On SPY the gaps were 6 of 160 rows carrying 2,410 of 1,111,112 OI — **0.22%**, immaterial. On a wider pull (250 rows, two expiries) it was 67 rows / 2.5% of OI. On an illiquid underlying it will be far worse, because the trigger *is* illiquidity. So: count `gamma IS NOT NULL` against the total, report the share of **OI** (not rows) that lacked a gamma, and if that share is material either fill it with `apply`/`bs_gamma` (you have strike, expiry, spot, and can supply an IV) or declare the map bounded to liquid strikes.
+
+**What is *not* worth cleaning:** the vendor's IV solve degenerates on deep-ITM contracts, emitting negative gamma (~−1e-10) and near-zero IV (~0.0006). It looks alarming and is numerically inert — on the SPY chain, filtering those rows moved net GEX by **$10.9 out of $3,697.1M (3e-9)**. Deep-ITM gamma really is ≈0, so the garbage values are ≈0 too. Don't build a cleaning step for this and don't cite it as a caveat; spend the attention on the missing-row share above, which is the one that actually moves the number.
+
+**Vintage mismatch:** in the same response, `last_quote_timeframe` can read `REAL-TIME` while `underlying_asset_timeframe` reads `DELAYED` (observed on SPY). Since `S²` scales the whole GEX number, a delayed underlying quietly biases it. Check both timeframe fields and say which vintage the map is built on.
 
 **Three assumptions you must state, not bury:**
 
@@ -151,6 +158,7 @@ State the gap; never estimate into it.
 | True dark-pool print feed | Partial — off-exchange inference only (§4.4). |
 | Market tide / sector tide / total options volume | **No direct substitute.** Approximate from index + ETF flows (`/etf-global/v1/fund-flows`) and say it is a proxy for breadth, not the tide. |
 | Vendor IV rank (`iv_rank_1y`) | Derived at cost (§4.3). |
+| **Indices — `I:VIX`, `I:VIX9D`, `I:VIX3M`, `I:VIX6M`, `I:SPX`, `I:NDX`** | **NOT ENTITLED — 403 `NOT_AUTHORIZED`, verified 2026-08-16.** This plan buys options + equities + futures + partner data, **not** the indices product. So the **VIX term structure is still unavailable** — the upstream skill's gap was not closed. For VIX work use TradingView (tier 3), or the **VX futures** via `/futures/v1/*`, which *are* entitled and which [`pitfalls/25-vix-options-futures-mechanics.md`](pitfalls/25-vix-options-futures-mechanics.md) wants you anchored to anyway. An index-level read (SPX/NDX level) has to come from the ETF proxy (SPY/QQQ) — say that you used the proxy. |
 | Congressional trades, Polymarket | **Not available.** Say so. |
 | Earnings-call transcripts | **Not available.** Earnings *numbers*, estimates, surprise, and guidance are (§3). |
 | Insider / institutional 13F ownership | **Not available** on this tier. |

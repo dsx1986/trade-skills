@@ -101,7 +101,7 @@ Do not substitute yfinance, web search, or guesses.
 |---|---|---|
 | `setup` | Scaffold a personal knowledge directory (`./knowledge/` by default) for substack posts, X / twitter threads, and writedowns | [references/commands/setup.md](references/commands/setup.md) |
 | `import <file_path>` | Parse one raw artifact (PDF, image, text) into structured YAML inside the knowledge directory | [references/commands/import.md](references/commands/import.md) |
-| `report [tickers | basket]` | Today's capital-flow / 资金流向 read (散户 / 大单 / 机构 proxied from Funda options premium-flow) across one or more names, as a comparison table + cross-section synthesis | [references/commands/report.md](references/commands/report.md) |
+| `report [tickers | basket]` | Today's capital-flow / 资金流向 read (散户 / 大单 / 机构 proxied from options premium-flow computed off the Massive tape) across one or more names, as a comparison table + cross-section synthesis | [references/commands/report.md](references/commands/report.md) |
 | `analysis [ticker | situation]` | Default trade analysis flow — preflight (knowledge dir, vega sanity, market data), then situation-specific loads | [references/commands/analysis.md](references/commands/analysis.md) |
 
 ### Routing rules

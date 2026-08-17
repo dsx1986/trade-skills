@@ -28,11 +28,11 @@ Full trigger list in the `description` field of `SKILL.md`.
 
 This fork runs on **Massive (Polygon) + Alpaca**, replacing the upstream skill's Unusual Whales + Funda stack.
 
-- **Tier 1 — Massive**: options chains with greeks / IV / OI, tick-level option trades and quotes, equities, indices (VIX curve), futures (NQ / ES 夜盘), Fed macro series, financials, earnings, analyst consensus, short interest, news with sentiment. See `references/massive-data.md`.
+- **Tier 1 — Massive**: options chains with greeks / IV / OI, tick-level option trades and quotes, equities, futures (NQ / ES 夜盘), Fed macro series, financials, earnings, analyst consensus, short interest, news with sentiment. **Indices are not entitled on this plan** (`I:VIX` 403s) — see `references/massive-data.md` §6.
 - **Tier 2 — Alpaca (read-only)**: the user's own positions / cost basis / P&L / order history, the market calendar, and a second quote-and-greeks read for cross-checks. See `references/alpaca-data.md`.
 - **Tier 3 — TradingView**: TA readouts, screeners, watchlists, alerts, chart screenshots.
 
-**What changed vs upstream, stated plainly:** dealer GEX, net premium flow, IV rank and off-exchange activity are no longer vendor-computed fields — they are **derived** from the raw chain and tape, so every one of them ships with a provenance line and a stated bound. Exact multi-leg package reassembly, a true dark-pool feed, market tide, congressional trades, transcripts, and 13F have **no substitute** and are declared unavailable rather than estimated. The trade-off cuts both ways: futures (夜盘) and the VIX term structure, which the upstream stack could not reach, now work. Full ledger in `references/massive-data.md` §4 and §6.
+**What changed vs upstream, stated plainly:** dealer GEX, net premium flow, IV rank and off-exchange activity are no longer vendor-computed fields — they are **derived** from the raw chain and tape, so every one of them ships with a provenance line and a stated bound. Exact multi-leg package reassembly, a true dark-pool feed, market tide, congressional trades, transcripts, and 13F have **no substitute** and are declared unavailable rather than estimated. The trade-off cuts both ways: futures (夜盘), which the upstream stack could not reach, now work from first-party CME data. But entitlement is not one block — **indices 403 on this plan**, so the VIX term structure is still not solved here. Full ledger in `references/massive-data.md` §4 and §6.
 
 ## Setup
 

@@ -22,7 +22,8 @@ A personal Claude Code plugin marketplace housing one options-trading skill — 
 
 - **Derived, not read.** Dealer GEX, net options premium flow, IV rank, and off-exchange activity were vendor-*computed* fields upstream. Here they are **computed from the raw chain and tape** ([`massive-data.md`](plugins/trade/skills/trade/references/massive-data.md) §4). Each carries a provenance line and a stated bound.
 - **Genuinely lost.** Exact multi-leg package reassembly, a true dark-pool feed, market tide, congressional trades, earnings-call transcripts, and 13F ownership have **no substitute**. The skill declares them unavailable instead of estimating into the gap (§6).
-- **Genuinely gained.** Futures (夜盘) and the VIX term structure — both unreachable on the upstream plan — now work from first-party data.
+- **Genuinely gained.** Futures (夜盘) now work from first-party CME data, where the upstream vendor returned 500s.
+- **Entitlement is not one block.** Verified 2026-08-16: this plan covers options, equities, futures, Fed macro, and the partner feeds (news / earnings / analysts) — but **indices 403** (`I:VIX`, `I:SPX`, `I:NDX`). So the **VIX term structure is still not solved**; it comes from TradingView or from entitled VX futures. Probe, don't assume.
 - **Read-only by construction.** The Alpaca server is wired **without** the `trading` toolset, so no order-placement tool exists in the session at all. The skill never executes trades.
 
 ## Setup
