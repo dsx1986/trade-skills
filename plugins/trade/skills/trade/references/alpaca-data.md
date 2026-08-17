@@ -59,7 +59,7 @@ Both cover quotes and chains. Pick deliberately rather than by whichever tool is
 | Tick-level option tape, condition/exchange codes | **Massive** | Deeper history and the reference tables for the codes. |
 | Futures, indices (VIX curve), macro, financials, earnings, news sentiment | **Massive** | Alpaca has none of these. |
 | **Positions, cost basis, P/L, order history** | **Alpaca** | Massive has none of these. |
-| Quick single-leg quote before quoting a structure | **Alpaca** | Fewer moving parts than a full snapshot pull. |
+| **Any quote, spread, or mark — pricing a leg, judging liquidity, estimating slippage, valuing a position** | **Alpaca — authoritative** | Alpaca returns the **NBBO**; Massive's snapshot `last_quote_*` is a *single exchange's* book and overstated the spread by 13× in testing ([`massive-data.md`](massive-data.md) §5). A structure priced off the Massive snapshot can be wrong by an order of magnitude on cost-to-close. |
 | Market calendar / clock | **Alpaca** | Purpose-built; `get_calendar` handles holidays and half-days. |
 | **Cross-check before a recommendation** | **Both** | When the two disagree on a mark by more than the spread, say so and use the wider/more conservative one. Do not silently pick the number that supports the thesis. |
 

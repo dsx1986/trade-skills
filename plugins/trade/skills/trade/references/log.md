@@ -10,6 +10,18 @@ timestamp: 2026-06-13T00:00:00Z
 
 OKF reserved `log.md` — chronological history of this knowledge bundle, most recent first. Seeded from git history; append a dated entry whenever you add or materially revise a concept (see [`OKF.md`](OKF.md) conformance checklist).
 
+## 2026-08-16 — Massive's snapshot quote is per-venue, not NBBO (found by the two-source cross-check)
+
+Running `/trade analysis XLE` against a live position surfaced the most consequential data defect so far, and the fork's own cross-check rule is what caught it.
+
+- **`last_quote_*` in `/v3/snapshot/options/*` carries a SINGLE exchange's book.** On XLE 2026-08-21: snapshot showed 62C at 0.49/0.76 and 65C at 0.05/0.15; the true NBBO (Alpaca) was 0.70/0.72 and 0.07/0.08 — the spread appeared **13× and 10× wider than reality**. The tell is that `last_quote_bid_exchange` and `last_quote_ask_exchange` differ.
+- **Why it matters beyond marks.** Valuing the position off the snapshot implied a −$124 cost-to-close on a 4-lot 62/65 call debit spread; the real figure against NBBO is **−$12**. An order of magnitude, in the direction that would have triggered an unnecessary exit.
+- **It compromises the §4.2 net-premium derivation.** That method classifies each print ask-side vs bid-side *against a quote*. Done against a per-venue book, prints that executed at the national best get mislabelled — so the sign of the flow number is unreliable. Whether the dedicated `/v3/quotes/{optionsTicker}` endpoint returns NBBO or the same per-venue book is **UNVERIFIED**; §4.2 now says to test it, and until then to cross-check against Alpaca or mark the sign provisional.
+- **IV inherits the error** (vendor solves off its own midpoint): 62C 23.10% here vs 25.56% on the NBBO mid; 65C 31.29% vs 28.96%. The distortion is largest where the venue book is thinnest — i.e. exactly the illiquid strikes a skew read depends on.
+- **Greeks are fine.** Deltas matched closely (0.4850 vs 0.4932), as did gamma. The divergence is in **quotes and IV**, not the greeks.
+
+Division of labour updated in [`alpaca-data.md`](alpaca-data.md): Alpaca is now **authoritative for any quote, spread, mark, liquidity judgement, or slippage estimate**; Massive keeps chains, aggregation, tape, futures, macro, and partner feeds.
+
 ## 2026-08-16 — Live probe corrects three claims from the same day's rewire
 
 First real `/trade analysis SPY` run against the new stack. Three things the rewire got wrong, corrected in place:
