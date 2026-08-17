@@ -78,7 +78,7 @@ This is the section that carries the fork's real risk. Each derivation below sta
 
 ### 4.1 Dealer GEX (replaces UW `spot-exposures/strike`, `gex-levels`)
 
-From one `/v3/snapshot/options/{underlying}` call you have per contract: `greeks.gamma`, `open_interest`, `details.strike_price`, `details.contract_type`, and the underlying price `S`.
+From one `/v3/snapshot/options/{underlying}` call you have per contract: `greeks_gamma`, `open_interest`, `details_strike_price`, `details_contract_type`, `implied_volatility`, `day_volume`, and the underlying price `underlying_asset_price` (`S`). Field names come back **flattened with underscores** through the MCP layer — `greeks_gamma`, not `greeks.gamma`.
 
 ```
 GEX_contract = gamma × open_interest × 100 × S² × 0.01        # $ per 1% spot move
@@ -86,6 +86,10 @@ GEX_strike   = Σ_calls GEX_contract − Σ_puts GEX_contract
 ```
 
 Do it server-side: `store_as` the chain, then `query_data` with a SQL `GROUP BY strike`. The Black-Scholes functions (`bs_gamma`, `bs_vanna`, `bs_volga`, `bs_delta`, `bs_theta`, `bs_vega`, `bs_rho`) are available through `apply` when you need a greek the snapshot didn't return, or a **what-if** greek at a hypothetical spot / IV — that is the piece the snapshot genuinely cannot give you.
+
+**The silent-truncation trap — verified live, 2026-08-16.** The snapshot omits the **entire greeks and IV block** for contracts with no recent trading (deep ITM, illiquid strikes): the columns are simply absent from those rows, not null. A naive `SUM(gamma × OI)` therefore drops those contracts **without erroring** and reports a GEX that is too small, with no sign anything was lost. Before publishing any aggregate: count the rows with a gamma against the total rows returned, and state the coverage. Where the missing contracts carry material OI, either fill their gamma with `apply`/`bs_gamma` (you have strike, expiry, spot, and can supply an IV) or say the map is bounded to the liquid strikes. This is the same class of defect as an unflagged truncation — the number looks complete precisely because nothing complained.
+
+**Vintage mismatch:** in the same response, `last_quote_timeframe` can read `REAL-TIME` while `underlying_asset_timeframe` reads `DELAYED`. Since `S²` scales the whole GEX number, a delayed underlying quietly biases it. Check both timeframe fields and say which vintage the map is built on.
 
 **Three assumptions you must state, not bury:**
 
@@ -129,7 +133,10 @@ Equity and option trades carry exchange IDs and condition codes. FINRA-reported 
 - **Timestamps are nanosecond epochs** on trades/quotes (`sip_timestamp`, `participant_timestamp`). Convert before comparing to anything, and never mix a nanosecond field with an ISO string in one sentence.
 - **`window_start` on a futures session bar is the day *before* the settle date** — see §3. This has already produced off-by-one session reads.
 - **An empty aggregate window means no trades, not zero price.** Options chains are sparse; a missing bar is missing, not flat.
-- **Snapshot greeks come from the vendor's own IV solve.** They are internally consistent, but they are not your broker's marks — do not quote them as executable.
+- **Snapshot greeks come from the vendor's own IV solve.** They are internally consistent, but they are not your broker's marks — do not quote them as executable. Cross-check a leg against Alpaca before quoting it ([`alpaca-data.md`](alpaca-data.md) §4).
+- **Greeks / IV are missing entirely on untraded contracts** — see §4.1. Any per-strike aggregate must report its coverage, or it is silently under-counting.
+- **Field names arrive flattened**: `greeks_gamma`, `details_strike_price`, `underlying_asset_price`, `last_quote_midpoint`. Writing the dotted form from the API docs into a `query_data` SQL statement returns nothing rather than erroring loudly.
+- **Two vintages in one row.** `last_quote_timeframe` (REAL-TIME) and `underlying_asset_timeframe` (DELAYED) can disagree — never narrate them as one snapshot.
 - **Open interest updates once daily (previous session).** Intraday OI change is not observable here; a same-day "OI built up" claim is unsupported.
 - **Short interest is two-week cadence** — structurally stale by construction.
 - **Paginated responses carry a next-page hint.** A first page is not the dataset; either follow the pages or state the cap.
