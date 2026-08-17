@@ -1,7 +1,7 @@
 ---
 type: Command Reference
 title: "/trade report [tickers | basket]"
-description: Today's capital-flow / 资金流向 read for one or more names — retail / 大单 / institutional proxied from options premium-flow (Unusual Whales direct when subscribed, Funda otherwise), mapped to a comparison table + cross-section synthesis. Read-only, not investment advice.
+description: Today's capital-flow / 资金流向 read for one or more names — retail / 大单 / institutional proxied from options premium-flow computed off the Massive option tape, mapped to a comparison table + cross-section synthesis. Read-only, not investment advice.
 tags: [command, report, capital-flow, money-flow, options-flow, funds-flow]
 timestamp: 2026-06-22T20:00:00Z
 ---
@@ -12,13 +12,14 @@ A daily **capital-flow / 资金流向** read across one or more names: who is bu
 
 Runs whenever the user invokes `/trade report ...`, or asks for 资金流向 / 流入流出 / 净流入·净流出 / 散户·大单·机构 / capital flow / money flow / "who's buying" across a name or a basket.
 
-> **Read the 口径 (data-source reality) FIRST — and state it in every reply.** There is **no** stock-side "retail / large-order / institutional daily net inflow" feed available here. The moomoo / Futu three-layer stock flow needs a logged-in **FutuOpenD gateway + the `futu-api` SDK** (`get_financial_unusual`) — env-gated and usually not running. So this command builds the read from **options premium-flow** as the proxy:
+> **Read the 口径 (data-source reality) FIRST — and state it in every reply.** There is **no** stock-side "retail / large-order / institutional daily net inflow" feed available here, and — unlike the upstream skill — **no vendor-computed options-flow aggregate either.** This command *builds* the read from the raw option tape:
 >
-> - **大单 / 机构 (smart money)** ← options `bullish/bearish premium`, net call/put premium, ask-vs-bid volume, and big-ticket flow alerts. Real institutional/large positioning shows up in options $ first.
-> - **散户 (retail)** ← `news/sentiment` tone (a *weak* proxy, not $ flow; coverage is thin on small / niche names).
-> - **机构 stock-side daily net flow** ← **not a net-flow feed.** With a UW key you *do* get the off-exchange print tape (`/api/darkpool/{t}`, `/api/stock/{t}/stock-volume-price-levels`) — size, price, and off-vs-lit split — but prints carry **no aggressor side**, so it is block *activity* at price levels, not signed institutional inflow. Without UW there is nothing here but quarterly 13F `ownership`. Either way, say which one you have; don't fabricate a signed number.
+> - **大单 / 机构 (smart money)** ← net options premium **you compute** from Massive: prints from `/v3/trades/{optionsTicker}` classified ask-side vs bid-side against `/v3/quotes/{optionsTicker}`, then aggregated. Full method and its traps: [`../massive-data.md`](../massive-data.md) §4.2. Real institutional/large positioning shows up in options $ first — but the number is now **yours**, with your query's bound on it.
+> - **散户 (retail)** ← Massive `/v2/reference/news` `insights` sentiment (a *weak* proxy, not $ flow; coverage is thin on small / niche names).
+> - **机构 stock-side daily net flow** ← **not a net-flow feed, and weaker here than upstream.** There is no dark-pool product in this stack; off-exchange activity can only be *inferred* from FINRA-reported prints via exchange / condition codes ([`../massive-data.md`](../massive-data.md) §4.4). Prints carry **no aggressor side**, so it is block *activity* at price levels, never signed institutional inflow. Say which one you have; don't fabricate a signed number.
+> - **The user's own book** ← Alpaca ([`../alpaca-data.md`](../alpaca-data.md)). This is the one "position" number in the report that is a fact rather than a proxy — keep it visibly separate from the flow proxies.
 >
-> If the user wants the *true* moomoo three-layer stock flow, point them to the Futu path: `pip install futu-api` + start FutuOpenD on `127.0.0.1:11111` (you can install the SDK but cannot log in their gateway). See `futu-capital-anomaly` skill.
+> **Two disclosures are mandatory in every reply**, because both numbers are derived rather than read: (1) the flow figure is **self-computed**, and (2) the **bound** you used — which strikes, which window, and how midpoint prints were bucketed.
 
 ## Arguments
 
@@ -31,56 +32,44 @@ Runs whenever the user invokes `/trade report ...`, or asks for 资金流向 / �
 
 ### 1. Resolve the data path
 
-**Check Unusual Whales first** — run the availability gate in [`../unusual-whales.md`](../unusual-whales.md) §1 (UW MCP in session, else `UNUSUAL_WHALES_API_KEY` from env → repo-root `.env` → the knowledge dir's repo `.env`).
+Run the availability gate in [`../massive-data.md`](../massive-data.md) §1. Massive is the only path to the flow numbers; Alpaca ([`../alpaca-data.md`](../alpaca-data.md)) supplies the user's own positions and the market calendar. If Massive isn't reachable, **say the flow read is unavailable** — a report built on quotes alone is not a 资金流向 read, and calling it one is the defect this whole 口径 block exists to prevent.
 
-- **UW reachable → use §2a.** UW is the upstream source of the Funda options fields, so the same metrics come back without the proxy or its shared-credit ceiling, plus intraday ticks and the dark-pool layer.
-- **UW not reachable → use §2b (Funda).** Resolve the Funda key per the `finance-data-providers:funda-data` skill (env `FUNDA_API_KEY`, else `.env` at the repo root; **this user's `.env` names it `FUNDA_AI_API_KEY`** — see `SKILL.md` → Data Access). When inside a worktree, the key lives in the **main repo** `.env`.
-- Either way: for more than ~3 tickers, batch them in one small script (loop + aggregate) rather than dozens of separate calls. **State in the reply which path produced the numbers** — the two are not interchangeable in resolution or coverage.
+Check `/v1/marketstatus/now` (or Alpaca `get_clock`) before saying "today": a pre-open call has no session flow to aggregate, and an early-close day truncates the tape legitimately.
 
-### 2a. Pull, per ticker — Unusual Whales path (preferred)
+### 2. Pull, per ticker
 
-`GET https://api.unusualwhales.com/api/...` with `Authorization: Bearer $UNUSUAL_WHALES_API_KEY` **and** `UW-CLIENT-API-ID: 100001`.
+**Use `store_as` + `query_data`, not a per-strike loop.** The whole point of the aggregation layer is to do steps 2–4 below in SQL server-side.
 
-| # | Endpoint | Gives | Use for |
+| # | Source | Gives | Use for |
 |---|---|---|---|
-| 1 | `/api/stock/{t}/options-volume` | same daily aggregate as the Funda row below (`bullish_premium`, `net_call_premium`, ask/bid-side volumes, avg volumes, OI) | **核心** — 大单/机构 direction |
-| 2 | `/api/stock/{t}/net-prem-ticks` | 5-min intraday series: `net_call_premium`, `net_put_premium`, `net_delta`, ask/bid-side volume | **intraday shape** — morning-vs-close accumulation or distribution, which the daily aggregate flattens |
-| 3 | `/api/stock/{t}/flow-alerts` or `/api/option-trades/flow-alerts?ticker_symbol={t}&min_premium=50000` | big tickets, each carrying `has_multileg` / `has_singleleg` / `has_sweep` / `has_floor`, `total_ask_side_prem` vs `total_bid_side_prem`, `volume_oi_ratio`, `iv_start`→`iv_end` | 大单 detail — the per-alert `has_multileg` flag is the pitfall-32 filter applied at the print level |
-| 4 | `/api/option-trades/multi-leg` (+ `/multi-leg/{id}/legs`) | spread packages and their legs | **MANDATORY before ranking any block** — pitfall 32; here the de-contamination is exact, not a share estimate |
-| 5 | `/api/darkpool/{t}` | off-exchange prints: `size`, `price`, `premium`, `executed_at`, `nbbo_bid`/`nbbo_ask`, `market_center` | the off-exchange block layer; direction is an **inference** from print vs NBBO — label it |
-| 6 | `/api/stock/{t}/ohlc/1d` (or the TradingView MCP quote) | day % change | 涨跌% |
-| 7 | `/api/stock/{t}/info` | `next_earnings_date`, `announce_time` (pre/postmarket), `beta`, `sector`, `avg30_volume` | 财报日 + basket context |
-| 8 | `/api/market/market-tide` | market-wide net call/put premium series | the cross-section backdrop — is the name moving with or against the tape |
+| 1 | `/v3/snapshot/options/{t}` | whole chain: per-contract greeks, IV, OI, day volume, quotes | **核心 context** — where the volume and OI actually sit; picks the strikes worth pulling tape for |
+| 2 | `/v3/trades/{optionsTicker}` on the strikes from #1 | per-print price, size, exchange, conditions, ns timestamp | the raw material for net premium |
+| 3 | `/v3/quotes/{optionsTicker}` at print timestamps | NBBO at execution | **the step that gives the number its sign** — ask-side (bought) vs bid-side (sold); bucket midpoint prints separately instead of forcing a side |
+| 4 | derived — [`../massive-data.md`](../massive-data.md) §4.2 | `premium = price × size × 100`; net call/put premium; 5-min buckets | 大单/机构 direction **and** the intraday shape |
+| 5 | `/v2/aggs/ticker/{t}/prev` + snapshot | day % change | 涨跌% |
+| 6 | `/benzinga/v1/earnings` or `/tmx/v1/corporate-events` | next earnings date + confirmed/pending status | 财报日. A **pending** date is not a scheduled catalyst — don't present it as one |
+| 7 | `/v2/reference/news` | `insights` sentiment + reasoning | 散户 tone proxy |
+| 8 | exchange / condition codes on #2 (resolve via `/v3/reference/exchanges`, `/v3/reference/conditions`) | off-exchange share | block *activity* only — **never** summed into net flow ([`../massive-data.md`](../massive-data.md) §4.4) |
+| 9 | Alpaca `get_all_positions` | the user's actual exposure in these names | keeps "what the tape says" separate from "what I own" |
 
-Values arrive as **strings** — cast before arithmetic and before sorting. `net-prem-ticks` `tape_time` is UTC; `market-tide` timestamps are ET-with-offset. See [`../unusual-whales.md`](../unusual-whales.md) §6.
+**Bound the pull deliberately** — top strikes by volume, or a delta band — and carry the bound into the output. Scanning every strike of a liquid name is not feasible in one pass, so the only honest options are a stated bound or an explicit "I could not cover the whole chain."
 
-**散户 tone still comes from Funda** on either path — UW serves headlines (`/api/news/headlines`) but no sentiment scoring. Pull `news/sentiment?ticker=<T>` from Funda for that one line; if no Funda key is available, drop the retail line and say why rather than substituting headline counts for tone.
+**Traps** (full list in [`../massive-data.md`](../massive-data.md) §5): timestamps are **nanosecond epochs**; OI updates once daily so same-day "OI built up" is unsupported; an empty aggregate window means no trades, not a flat price; paginated responses carry a next-page hint — a first page is not the dataset. Mind market-holiday gaps when computing "vs prior close" (use Alpaca `get_calendar` — the prior trading day is often not yesterday).
 
-### 2b. Pull, per ticker — Funda fallback
-
-| # | Endpoint | Gives | Use for |
-|---|---|---|---|
-| 1 | `options/stock?ticker=<T>&type=options-volume` | today's row: `bullish_premium`/`bearish_premium`, `net_call_premium`/`net_put_premium`, `call/put_volume`, `*_volume_ask_side`/`*_bid_side`, `avg_7/30_day_*_volume`, OI | **核心** — complete daily aggregate; the 大单/机构 direction |
-| 2 | `options/flow-alerts?ticker=<T>&min_premium=50000&limit=200` | big tickets: `type` (call/put), `total_premium`, `total_ask_side_prem`, `has_sweep`, `next_earnings_date` | 大单 detail + earnings date |
-| 3 | `stock-price?ticker=<T>&limit=2` | last 2 EOD rows (param is **`ticker`**, not `symbol`) | day % change = `historical[0].close` vs `[1].close` |
-| 4 | `news/sentiment?ticker=<T>` | `ticker_sentiment` positive/negative/neutral counts + latest direction | 散户 tone proxy |
-
-**Quote-endpoint trap:** `/v1/quotes?type=` rejects `realtime-quotes` / `price-change` / `exchange-quotes` (FMP 400). Use `stock-price` for day change. Mind market-holiday gaps when computing "vs prior close" (e.g. Juneteenth → prior trading day is not yesterday).
-
-**flow-alerts truncation — do not ignore:** the call caps at `limit` (200). When a name returns exactly the limit, there are *more* big tickets than you fetched, so your call/put **counts and summed premium are truncated** — use them only as an *activity* signal and take **direction from `options-volume`** (the complete aggregate). If you bound coverage this way, say so.
+**The cross-section backdrop** that UW's `market-tide` gave for free has no direct substitute. Approximate it from index snapshots (`I:SPX`, `I:NDX`) plus `/etf-global/v1/fund-flows`, and label it a **breadth proxy, not the tide**.
 
 ### 3. Derive the per-ticker metrics
 
-The metric definitions below are field-identical on both paths (UW is the upstream of the Funda options fields). Row numbers cite the **2b** table; the 2a equivalents are noted inline.
+Row numbers cite the §2 table. **Every premium metric below is computed by you, not read off a field** — the sign comes from your ask/bid classification in #3, so a sloppy classification silently inverts the verdict in §4.
 
-- **涨跌%** — from #3 (2a: #6).
-- **净期权流向 (牛−熊)** = `bullish_premium − bearish_premium` ($). Positive = net bullish smart-money $.
-- **净 Call 权利金 / 净 Put 权利金** = `net_call_premium` / `net_put_premium`. **Sign matters**: positive = net *bought* (ask-side); **negative call premium = calls net SOLD** (bearish/distribution).
-- **放量倍数** = `call_volume / avg_30_day_call_volume` (and puts). <1 = below average / quiet.
-- **盘口** — `call_ask_side` vs `call_bid_side` (ask>bid = aggressive call buying); same for puts (put ask>bid = put buying). Cross-check it agrees with the premium signs — that agreement IS your adversarial check.
-- **财报日** — `next_earnings_date` from #2 (2a: #7, which also gives `announce_time` pre/postmarket).
-- **日内形态 (UW path only)** — from #2 `net-prem-ticks`: where in the session the premium arrived. A daily aggregate that is bullish only because of the first 15 minutes is a different fact from one that builds into the close; say which. Read the *derivative* per [`../parent-order-flow-framework.md`](../parent-order-flow-framework.md).
-- **暗池 (UW path only)** — from #5: total off-exchange premium, largest prints, and whether they printed above or below the NBBO midpoint. **Activity at price levels, not signed flow** — never sum it into the net-flow number.
+- **涨跌%** — from #5.
+- **净期权流向 (牛−熊)** = (ask-side call premium + bid-side put premium) − (bid-side call premium + ask-side put premium). Positive = net bullish smart-money $. Midpoint prints stay in their own bucket and are reported separately, never split 50/50 into the two sides.
+- **净 Call 权利金 / 净 Put 权利金** = ask-side − bid-side premium, per type. **Sign matters**: positive = net *bought*; **negative call premium = calls net SOLD** (bearish/distribution).
+- **放量倍数** = today's contract volume ÷ its trailing 30-day average, from option aggregates. <1 = below average / quiet. If you didn't pull the 30-day history, say the multiple is unavailable rather than eyeballing "heavy."
+- **盘口** — ask-side vs bid-side **volume** (not premium), calls and puts separately. Cross-check it agrees with the premium signs — that agreement IS your adversarial check, and it is more valuable here than upstream because both numbers came from the same classification step you performed. If they disagree, your classification is suspect; investigate before publishing.
+- **财报日** — from #6, with its confirmed/pending status.
+- **日内形态** — from #4's 5-minute buckets: where in the session the premium arrived. A daily aggregate that is bullish only because of the first 15 minutes is a different fact from one that builds into the close; say which. Read the *derivative* per [`../parent-order-flow-framework.md`](../parent-order-flow-framework.md).
+- **场外占比 (off-exchange share)** — from #8: FINRA-reported share of volume and the largest such prints. **Activity at price levels, not signed flow** — never sum it into the net-flow number, and label it an inference, not a dark-pool feed.
 
 ### 4. Classify each name (聪明钱判定)
 
@@ -91,20 +80,22 @@ The metric definitions below are field-identical on both paths (UW is the upstre
 | 🟡 **价拉·期权没跟** | price up but options **light** (volume << avg) and net flow ~flat. Momentum not yet confirmed by smart money — needs follow-through. |
 | ⚖️ **双押 / 事件** | **both** call and put premium strongly net-bought **and** earnings within ~1–2 weeks → earnings straddle positioning. **Don't read the big "inflow" as single-direction conviction.** |
 
-Always flag **earnings proximity** (from #2): a name reporting in days explains two-sided premium; a name reporting weeks out gives a *cleaner* directional read.
+Always flag **earnings proximity** (from #6): a name reporting in days explains two-sided premium; a name reporting weeks out gives a *cleaner* directional read.
 
 ### 5. Output
 
 - **One table per basket**, columns: `Ticker | Chg% | Net options flow (bull−bear, $M) | Net call $M | Net put $M | Call vol / 30d | Bid-ask skew | Smart-money verdict`. Premiums in `$M`, one decimal.
 - Then a **cross-section synthesis**: who's the clean long, who's diverging/distributing, who's price-only-unconfirmed, who's event-driven; and the **basket vs basket** comparison if more than one.
 - A **retail (散户) news-sentiment** line: counts + tone, with the thin-coverage caveat.
-- **On the UW path**, add two lines the Funda path cannot produce: the **intraday shape** (when in the session the premium arrived) and the **dark-pool** layer (off-exchange premium + largest prints vs NBBO), each with its caveat. Name the data path in one clause so the reader knows which 口径 they're reading.
+- Add the **intraday shape** line (when in the session the premium arrived) and the **场外占比** line, each with its caveat.
+- **A provenance clause is mandatory, not optional polish** — one sentence naming that the flow numbers are computed from the Massive option tape and stating the bound you used (strikes / window / midpoint handling). Without it the reader cannot tell a full-chain read from a top-5-strike sample, and the two support different conclusions.
+- If the user holds any of these names, show the **Alpaca position line separately** from the flow table — a fact next to proxies, never merged into them.
 - **Respond in the user's language** (see `SKILL.md` User Profile — the report is chat output; only git-tracked files stay English). The 散户 / 大单 / 机构 taxonomy keeps its Chinese names as domain terms — gloss them (retail / block / institutional) on first use when replying in English.
 
 ## Constraints
 
 - **Read-only.** This is data presentation, never a trade recommendation, price target, or buy/sell call. Close with a one-line **非投资建议** note.
-- **State the 口径 every time**: which data path (UW direct vs Funda proxy); options-flow proxy for 大单/机构 + news for 散户; no stock-side three-layer net flow (dark pool is unsigned block activity, not a substitute); flow-alerts truncation; earnings-driven two-sided flow ≠ single-direction.
+- **State the 口径 every time**: the flow numbers are **self-computed** from the Massive option tape and **bounded** by your query; options-flow proxy for 大单/机构 + news sentiment for 散户; no stock-side three-layer net flow, and no dark-pool feed — off-exchange share is an unsigned inference; earnings-driven two-sided flow ≠ single-direction.
 - **A single big order ≠ smart money** — read the *aggregate* premium, not one print. See [`../pitfalls/02-single-flow-not-smart-money.md`](../pitfalls/02-single-flow-not-smart-money.md).
 - **Options flow is dealer-/positioning-driven, not "retail money"** — see [`../pitfalls/17-dealer-flow-not-retail.md`](../pitfalls/17-dealer-flow-not-retail.md).
 - **Don't fabricate** numbers or a retail/institutional split the feed doesn't provide. If an endpoint errors or a name has no listed options, say so for that name and continue.
@@ -112,7 +103,8 @@ Always flag **earnings proximity** (from #2): a name reporting in days explains 
 
 ## Related
 
-- [`../unusual-whales.md`](../unusual-whales.md) — the tier-0 data path: availability gate, auth headers, endpoint whitelist, entitlement gaps, field traps.
+- [`../massive-data.md`](../massive-data.md) — the tier-1 data path: availability gate, endpoint map, the §4.2 net-premium derivation this whole command rests on, field traps, and §6's list of what cannot be produced.
+- [`../alpaca-data.md`](../alpaca-data.md) — tier 2: the user's own positions (the one fact in the report), plus the market calendar.
 - [`../pitfalls/32-multi-leg-share-before-block-direction.md`](../pitfalls/32-multi-leg-share-before-block-direction.md) — **read before ranking any block by premium**: spread legs print full premium with their own aggressor side, so an unfiltered tally manufactures a net direction that isn't there (a real case sign-flipped +$68.9M to $0.0M). Filter on `multi_leg_volume` and `stock_multi_leg_volume`.
 - [`../pitfalls/02-single-flow-not-smart-money.md`](../pitfalls/02-single-flow-not-smart-money.md) — one institutional order isn't edge.
 - [`../pitfalls/17-dealer-flow-not-retail.md`](../pitfalls/17-dealer-flow-not-retail.md) — options flow is dealer hedging, not retail direction.

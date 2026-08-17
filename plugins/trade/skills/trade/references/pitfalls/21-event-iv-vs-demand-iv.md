@@ -32,9 +32,7 @@ Concrete failure (NOK 2026-05-11): NOK at IV Rank 66, IV 74%. I recommended "rol
    - >45 days to earnings AND IVR elevated = **demand-driven default** — investigate flow before assuming crush
 
 2. **Always pull net premium data before making a vega recommendation**:
-   ```
-   Funda API: /v1/options/stock?ticker=X&type=net-prem-ticks
-   ```
+   Build it from the Massive option tape — prints classified ask-side vs bid-side against the NBBO, bucketed into 5-minute windows ([`../massive-data.md`](../massive-data.md) §4.2). There is no ready-made `net-prem-ticks` field in this stack, so state the bound (which strikes, which window) with the number.
    - Net call premium >+$5M/day on 3+ consecutive days = sustained institutional accumulation
    - Net premium turning negative or sharply bid-side = event-style top forming
    - Check for "block clusters" — a single $400K+ trade or 5+ trades in one strike inside 30 minutes = real institution at work

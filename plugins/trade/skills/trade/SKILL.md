@@ -15,7 +15,7 @@ description: >
   NQ / ES 夜盘 / overnight futures, position sizing / 仓位 / 止损 /
   leverage, or macro regime reads
   (宏观, 晨报 morning note, 收盘复盘 EOD review, CPI / FOMC). 33 pitfalls,
-  frameworks, cases. Unusual Whales / TradingView / Funda data; user-language
+  frameworks, cases. Massive / Alpaca / TradingView data; user-language
   replies, English files. 3 axes: vega vs IVR (p19), delta,
   asymmetry; bull-conviction >= 4 forbids Jade Lizard /
   IC / Calendar (p24). Size = risk$ / stop, never reversed (p30).
@@ -44,17 +44,18 @@ Active US-equity options trader's personal knowledge base. Concrete strikes, pro
 
 ## Data Access
 
-**Tier 0 — Unusual Whales, only when the user has a subscription.** If a UW MCP server is in the session, or `UNUSUAL_WHALES_API_KEY` resolves (env → repo-root `.env` → the knowledge dir's repo `.env`), UW is the **first** stop for options flow, dark pool, dealer GEX, IV rank, and intraday net-premium ticks — it is the upstream source behind the Funda options fields, queried directly instead of through a proxy. Load [references/unusual-whales.md](references/unusual-whales.md) for the availability gate, auth headers (`UW-CLIENT-API-ID: 100001` is required), endpoint map, and entitlement traps. **No key → this tier does not exist**: fall back to the three below and say which proxy the read is built on. Never present a UW-only dataset (dark pool, market tide, multi-leg legs) as available when it isn't.
+This fork runs on the **user's own Massive + Alpaca subscriptions**. Credentials are injected into the MCP servers at process start and are never stored in this repo — see the README for wiring.
 
-Then, in order:
+1. **Massive (Polygon) MCP — tier 1, the quantitative backbone.** Options chains with greeks / IV / OI, tick-level option trades and quotes, equities, indices (VIX curve), **futures (NQ / ES 夜盘)**, Fed macro series, financials, earnings dates + surprise, analyst consensus, FINRA short interest, and news **with sentiment**. Load [references/massive-data.md](references/massive-data.md) for the availability gate, the endpoint map, and — critically — the **derivations** (§4): dealer GEX, net premium flow, and IV rank are **computed here, not read off a vendor feed**. Say so whenever you use one, and state its assumption.
+2. **Alpaca MCP — tier 2, the user's own book + a second read.** The only source of real positions, cost basis, unrealized P/L, and order history; plus an independent quote / chain / greeks source for cross-checking tier 1 before a recommendation. **Read-only by construction** — the wired server has no trading toolset. Load [references/alpaca-data.md](references/alpaca-data.md).
+3. **TradingView MCP / desktop reader — tier 3, what neither of the above has.** TA readouts and indicator ratings, multi-timeframe alignment, screeners / scans across non-options universes, the user's own watchlists and alerts, and chart screenshots.
 
-1. **TradingView MCP (`finance-data-providers:tradingview-mcp`) FIRST** for quotes, TA readouts / indicator ratings, multi-timeframe alignment, screeners / scans, gainers / losers, futures (NQ / ES 夜盘 overview + movers — UW futures endpoints 500, so 夜盘 stays here), pre/after-market prices, unusual options activity, and quick options-chain looks. Headless — no desktop app, no login, no CDP relaunch that closes the user's charts.
-2. **TradingView desktop reader (`finance-data-providers:tradingview-reader`)** when you need what the MCP can't give: options chain **with greeks** (delta / gamma / theta / vega), per-strike IV skew, expiries with contract counts, watchlists, alerts, TV news, chart screenshots. With tier 0 live, most greeks / skew pulls no longer need this trip.
-3. **Funda AI API (`finance-data-providers:funda-data`)** for everything fundamental or flow-based: fundamentals, filings, transcripts, analyst estimates, options premium flow / GEX (the `report` command's fallback backbone), supply chain, sentiment, Polymarket, congressional trades, economics.
+Do not substitute yfinance, web search, or guesses.
 
-Do not substitute yfinance, web search, or guesses. The MCP's options-chain IV is Yahoo-sourced — fine for chain shape / OI / volume, not for IV-rank or skew decisions (use UW `iv-rank`, or tier 2 / 3).
+**Two standing honesty rules, because this stack derives what the upstream skill read off a vendor:**
 
-**Credentials live in the root repo `.env`, not the worktree.** When running inside a worktree (path matches `.claude/worktrees/*`), the worktree itself has no `.env` — resolve to the main repo's `.env` by stripping the `.claude/worktrees/<name>` suffix from the current working directory. `UNUSUAL_WHALES_API_KEY` may instead live in the personal knowledge dir's repo — see the resolution order in [references/unusual-whales.md](references/unusual-whales.md) §1.
+- **Name the provenance.** Every GEX map, net-premium number, IV rank, and off-exchange read is self-computed. State which source and which basis (OI-based vs volume-based GEX; the IV-rank lookback window; bounded vs complete tape).
+- **Never estimate into a gap.** [references/massive-data.md](references/massive-data.md) §6 lists what this stack genuinely cannot produce — exact multi-leg package reassembly, a true dark-pool feed, market tide, congressional trades, transcripts, 13F. Say the dataset isn't available and name what you used instead. A missing dataset is an answer; a fabricated one is a defect.
 
 ## Response Rules
 
@@ -127,7 +128,8 @@ This knowledge base is an **[Open Knowledge Format (OKF) v0.1](references/OKF.md
 | [references/macro-framework.md](references/macro-framework.md) | Macro judgment pipeline: seven-question gate, marginal driver, micro-to-macro jigsaw, **pricing before forecasting** (implied-pricing → data-source map), the change in the change, price as evidence, cross-asset confirmation, expression and sizing. Plus the 8 dashboard families and 8 output modes (morning note / EOD review / weekly / pre-trade consult / monthly regime review / 13F / divergence watch / thematic deep dive). Load for macro regime reads, data prints, digesting a macro report, or turning a macro view into an expression. |
 | [references/overnight-futures-framework.md](references/overnight-futures-framework.md) | Overnight index-futures (夜盘) attribution — "what's driving NQ/ES right now". Session clock, three-complex divergence read, catalyst clock, scenarios, data-freshness caveats. |
 | [references/parent-order-flow-framework.md](references/parent-order-flow-framework.md) | Parent-order (母单) net-flow × volatility × trend state matrix — 吸筹 / 动量 / 派发 / 风险释放 / 承接·换手. Load when classifying who is buying vs selling, reading 母单/大单 net flow, or calling accumulation vs distribution. |
-| [references/unusual-whales.md](references/unusual-whales.md) | Direct Unusual Whales access (Data Access tier 0). Load whenever a UW key / MCP is available and the question needs options flow, dark pool, dealer GEX, IV rank, intraday net-premium ticks, or exact multi-leg de-contamination — it carries the availability gate, endpoint map, entitlement gaps, and field traps. |
+| [references/massive-data.md](references/massive-data.md) | Massive/Polygon access (Data Access tier 1). Load whenever the question needs an options chain, greeks, the option tape, dealer GEX, net premium flow, IV rank, futures / 夜盘, indices, macro series, earnings dates, or news sentiment — it carries the availability gate, endpoint map, the **self-computed derivations** and their assumptions, field traps, and the explicit list of what this stack cannot produce. |
+| [references/alpaca-data.md](references/alpaca-data.md) | Alpaca access (Data Access tier 2). Load for the user's **own positions / cost basis / P/L / order history**, the market calendar, or a second quote-and-greeks read to cross-check tier 1. Read-only by construction — no trading toolset is wired. |
 | [references/pitfalls/index.md](references/pitfalls/index.md) | Index of 33 trading pitfalls — lookup by trade type. |
 | [references/pitfalls/NN-*.md](references/pitfalls/) | Individual pitfall rules — load when a relevant trade situation arises. The `analysis` reference has a full situation → pitfall map. |
 | [references/ticker/index.md](references/ticker/index.md) | Index of trade case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ, NBIS). |

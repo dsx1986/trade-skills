@@ -12,7 +12,9 @@ Multi-factor confluence framework using dealer gamma, options chain structure, I
 
 **Critical rule**: This framework outputs **probability + key levels**, not direction predictions. Use it to **size and structure** trades, not to decide direction. Direction comes from tape + catalysts. Inverting this — letting gamma decide direction — fades dealer hedge flow with retail-style "market structure" interpretation.
 
-**Where the numbers come from**: with an Unusual Whales key ([`unusual-whales.md`](unusual-whales.md)), pull per-strike exposure from `/api/stock/{t}/spot-exposures/strike` (gamma · vanna · charm · delta, split `*_oi` vs `*_vol`), the flip and wall levels from `/api/stock/{t}/gex-levels`, term shape from `/greek-exposure/expiry`, and the pin candidates from `/max-pain` + `/oi-per-strike`. State whether a reading is OI-based or session-volume-based — on heavy-flow days they disagree. Without a UW key, Funda `type=greek-exposure` is the fallback and is coarser.
+**Where the numbers come from**: there is **no vendor GEX feed in this stack** — you compute it. Pull the chain from Massive `/v3/snapshot/options/{underlying}` (per-contract `greeks.gamma`, `open_interest`, strike, type) and aggregate per strike; the formula, the sign convention, and the wall / flip derivation are in [`massive-data.md`](massive-data.md) §4.1. Use `store_as` + `query_data` so the aggregation is one round-trip, and `apply` with `bs_gamma` / `bs_vanna` / `bs_volga` when you need a **what-if** greek at a hypothetical spot or IV — that is the piece a snapshot cannot give you. Max pain and OI-per-strike come from the same chain pull.
+
+**Three things to state every time, because they are now assumptions rather than a vendor's answer**: (1) the reading is **self-computed**; (2) it is **OI-based** unless you built the volume-weighted variant from the trade tape — on heavy-flow days the two disagree; (3) the call-positive / put-negative sign convention *encodes* "dealers short calls, long puts," which is a convention, not a measurement ([`pitfalls/17-dealer-flow-not-retail.md`](pitfalls/17-dealer-flow-not-retail.md)).
 
 ---
 

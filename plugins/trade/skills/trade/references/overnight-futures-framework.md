@@ -1,7 +1,7 @@
 ---
 type: Framework
 title: Overnight Index-Futures Framework (夜盘 read)
-description: Answering "what is driving NQ/ES right now" during the Globex overnight session — tape vs prior settle, the three-complex divergence read, the catalyst clock, attribution discipline, and scenario output. Includes data-source caveats for the Funda/FMP and TradingView stack.
+description: Answering "what is driving NQ/ES right now" during the Globex overnight session — tape vs prior settle, the three-complex divergence read, the catalyst clock, attribution discipline, and scenario output. Includes data-source caveats for the Massive futures/indices and TradingView stack.
 tags: [overnight, globex, nq, es, index-futures, macro, divergence, catalyst-clock, session-structure, data-freshness]
 timestamp: 2026-07-22T05:40:00Z
 ---
@@ -71,12 +71,11 @@ Base/bull/bear with probabilities summing to 100%, each keyed to: prior settle, 
 
 | Source | Caveat |
 |---|---|
-| TradingView MCP (`finance-data-providers:tradingview-mcp`) | **Preferred first stop for 夜盘 quotes**: `futures_category_snapshot("equity_index")` returns NQ/ES/YM/RTY front-month OHLCV in one call; `futures_top_movers` for the cross-complex scan. No app, no relaunch. Continuous-contract (`1!`) symbology; no bid/ask depth. |
+| TradingView MCP | **Fast cross-complex scan**: `futures_category_snapshot("equity_index")` returns NQ/ES/YM/RTY front-month OHLCV in one call; `futures_top_movers` for the sweep. No app, no relaunch. Continuous-contract (`1!`) symbology; no bid/ask depth. Good for *breadth*; take the precise session numbers from Massive below. |
 | TradingView desktop reader | Needs CDP relaunch if the port is down — **relaunch closes the user's charts**; don't do it mid-session without asking. |
-| Unusual Whales `/api/futures/*` | **Unavailable** — `contracts` and `{contract}/candles` both returned HTTP 500 when probed (2026-08-11). Don't route 夜盘 here even with a live UW key; the tier-0 upgrade in [`unusual-whales.md`](unusual-whales.md) covers options flow and GEX, not futures. |
-| Funda `/v1/quotes?type=commodity-quotes` (FMP proxy) | NQUSD/ESUSD tick sub-minute (verified 45s apart) but carry **no timestamp field**; `volume` is FMP's own aggregation, not CME; no bid/ask. Near-real-time, not exchange-licensed real-time. `ticker` param is ignored — returns all, filter client-side. |
-| Funda `/v1/charts?type=5min&ticker=NQUSD` | Works, ET timestamps, but bars **lag 5–15 min** behind the quote — the chart's right edge is not "now." `^KS11` intraday is empty; use live index quote + daily history for Asia. |
-| Funda `/v1/calendar` | `limit` caps at 1000 (422 above — easy to swallow in a try/catch and get an empty list). Earnings calendar mixes foreign listings with **local-currency revenue** (KRW rows dwarf USD) and duplicates via 5-letter OTC ADRs (…Y/…F) + preferred share classes (T-PA). Filter before sorting by size. |
-| Funda `/v1/quotes?type=index-quotes` | Asia rows update live during their sessions; `^VIX`/`^NDX` are prior-close after US hours. Don't mix the two vintages in one sentence without labeling. |
+| **Massive `/futures/v1/aggs/{ticker}`, `/futures/v1/trades/{ticker}`, `/futures/v1/contracts`** | **The upgrade in this fork — real per-contract CME data, not a continuous-contract proxy.** The upstream skill pinned 夜盘 to TradingView because its vendor's futures endpoints 500'd; that constraint is gone. **Session boundary trap:** a futures session opens the *evening before* the date it settles on, so to load the session settling on date D you query `window_start` for **D−1**. Getting this wrong shifts the whole overnight read by one session. `/futures/v1/market-status` says whether the product is open, paused, or closed before you interpret a flat tape. |
+| Massive `/v3/snapshot/indices` (`I:VIX`, `I:VIX9D`, `I:VIX3M`, `I:VIX6M`), `/v2/aggs/ticker/{indicesTicker}/...` | The vol-complex leg of the three-complex read, and the VIX term structure the upstream stack could not reach. Index aggregates are built from index *values*, not trades — an empty interval means no index update, not zero volume. |
+| Massive `/fed/v1/treasury-yields` | The rates leg. Daily series — **not** an intraday yield tick, so don't narrate an overnight rates move off it; use it for the level and the change-in-change ([`pitfalls/29-second-derivative-not-level.md`](pitfalls/29-second-derivative-not-level.md)). |
+| Massive `/benzinga/v1/earnings`, `/tmx/v1/corporate-events` | The catalyst clock. `corporate-events` carries a confirmed/pending status — a *pending* date is not a scheduled catalyst, and treating it as one manufactures an event. |
 
 Related: [`price-action-framework.md`](price-action-framework.md) (why the same headline lands differently), [`gamma-framework.md`](gamma-framework.md) (if the question turns into an options-structure question), [`ticker/nq-2026-07.md`](ticker/nq-2026-07.md) (worked example of this framework, live).

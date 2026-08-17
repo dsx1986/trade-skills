@@ -30,10 +30,11 @@ plugins/
           gamma-framework.md
           price-action-framework.md
           macro-framework.md    # Macro judgment pipeline + dashboard families + output modes
-          unusual-whales.md     # Data Access tier 0 — direct UW access when subscribed (gate, endpoints, traps)
+          massive-data.md       # Data Access tier 1 — Massive/Polygon (gate, endpoints, derivations, traps, gaps)
+          alpaca-data.md        # Data Access tier 2 — Alpaca read-only (own positions, calendar, cross-check)
           overnight-futures-framework.md
           parent-order-flow-framework.md
-          pitfalls/             # 32 trading pitfalls + index.md (one file per rule)
+          pitfalls/             # 33 trading pitfalls + index.md (one file per rule)
           ticker/               # Case studies (INTC, Mag-7, APP, NOK, TSEM, CBRS, SNOW, MDB, VIX, SATS, 6981, MU, NQ, NBIS) + index.md
           commands/             # Subcommand reference files (impeccable pattern)
             setup.md            # /trade setup workflow
@@ -99,7 +100,7 @@ Version lives in `plugins/trade/plugin.json`, not in SKILL.md frontmatter.
 - `.claude-plugin/marketplace.json` — marketplace listing.
 - `plugins/trade/plugin.json` — plugin manifest. The skill under `plugins/trade/skills/trade/` is auto-discovered via its `SKILL.md` frontmatter.
 
-**Version bumps must touch both files.** `plugins/trade/plugin.json` is the source of truth, and `.claude-plugin/marketplace.json` mirrors it in **two** places — `metadata.version` and `plugins[0].version`. They drift silently otherwise: the release workflow only packages the skill directories, so a stale marketplace.json never appears in a release artifact, but it *is* what `npx plugins add himself65/trade-skills` reads off the default branch (v2.4.0 and v2.5.0 both shipped with it pinned at 2.3.0). CI enforces this — `himself65/skill-lint@v3` (3.1.0+) auto-detects `.claude-plugin/marketplace.json` and fails on version drift, so the existing `lint` job covers it with no extra config.
+**Version bumps must touch both files.** `plugins/trade/plugin.json` is the source of truth, and `.claude-plugin/marketplace.json` mirrors it in **two** places — `metadata.version` and `plugins[0].version`. They drift silently otherwise: the release workflow only packages the skill directories, so a stale marketplace.json never appears in a release artifact, but it *is* what `npx plugins add dsx1986/trade-skills` reads off the default branch (v2.4.0 and v2.5.0 both shipped with it pinned at 2.3.0). CI enforces this — `himself65/skill-lint@v3` (3.1.0+) auto-detects `.claude-plugin/marketplace.json` and fails on version drift, so the existing `lint` job covers it with no extra config.
 
 **Release is automatic — bumping the version in `plugin.json` *is* the release.** On every push to `main`, `.github/workflows/auto-tag.yml` reads `plugins/trade/plugin.json`; if no `vX.Y.Z` tag matches that version yet, it creates and pushes the tag, then calls `.github/workflows/release-skills.yml` to zip each skill and publish the GitHub release. It is idempotent — a push whose version is already tagged does nothing — and `workflow_dispatch` can backfill a release that was missed. Pushing a `vX.Y.Z` tag by hand still works and takes the same path.
 
@@ -108,7 +109,7 @@ The two workflows are wired via `workflow_call` rather than letting the tag push
 Users install via:
 
 ```bash
-npx plugins add himself65/trade-skills
+npx plugins add dsx1986/trade-skills
 ```
 
 When invoked as a plugin, the skill is namespaced. Since plugin and skill share the name `trade`, the invocation form is `/trade <subcommand>` (or `/trade:trade <subcommand>` if disambiguation is needed).
@@ -116,4 +117,6 @@ When invoked as a plugin, the skill is namespaced. Since plugin and skill share 
 ## Important constraints
 
 - **No live trade execution.** Analysis is read-only. Staging draft orders via the IBKR MCP `create_order_instruction` (which only creates an instruction the user must review and transmit in IBKR) is permitted; never transmit a live order or claim one was filled. Equity/ETF only — multi-leg options cannot be staged and stay manual. Never generate code that places trades.
-- **Market data priority — tier 0 + three tiers:** (0) **Unusual Whales, only when the user has a subscription** (`UNUSUAL_WHALES_API_KEY` resolves, or a UW MCP server is in the session) — first stop for options flow, dark pool, dealer GEX, IV rank, intraday net-premium ticks and multi-leg packages; it is the upstream source behind the Funda options fields. See `plugins/trade/skills/trade/references/unusual-whales.md` for the availability gate, the required `UW-CLIENT-API-ID: 100001` header, the endpoint whitelist, and the entitlement gaps (VIX term structure, congress, futures are **not** on this plan). No key → the tier does not exist; fall back and say which proxy the read used. Then: (1) TradingView MCP (`finance-data-providers:tradingview-mcp` skill, bundled headless [tradingview-mcp](https://github.com/atilaahmettaner/tradingview-mcp) server) FIRST for quotes, TA readouts, screeners, futures/夜盘, extended hours, unusual options activity. (2) TradingView desktop reader (`finance-data-providers:tradingview-reader` skill) for options chains **with greeks**, per-strike IV skew, watchlists, alerts, chart screenshots. (3) Funda AI API (`finance-data-providers:funda-data` skill) for fundamentals, filings, transcripts, analyst estimates, options flow/GEX, supply chain, sentiment, Polymarket, congressional trades, economics, etc. Do not substitute yfinance, web search, or guesses.
+- **No secrets in this repo.** This fork runs on the user's own Massive + Alpaca subscriptions, injected into the MCP servers at process start. Never commit a key, an endpoint with an embedded token, or a `.env` — and never write one into a skill file or a knowledge-dir note.
+- **Market data priority — three tiers:** (1) **Massive (Polygon) MCP** — the quantitative backbone: options chains with greeks / IV / OI, tick-level option trades and quotes, equities, indices (VIX curve), futures (NQ / ES 夜盘), Fed macro series, financials, earnings + surprise, analyst consensus, FINRA short interest, news with sentiment. See `plugins/trade/skills/trade/references/massive-data.md` for the availability gate, endpoint map, field traps, and §4/§6. (2) **Alpaca MCP, read-only** (`account,assets,watchlists,stock-data,options-data,corporate-actions,news` — no `trading` toolset) — the user's own positions / cost basis / P&L / order history, the market calendar, and a second quote-and-greeks read for cross-checks. See `references/alpaca-data.md`. (3) **TradingView** — TA readouts, screeners, watchlists, alerts, chart screenshots. Do not substitute yfinance, web search, or guesses.
+- **Derived ≠ read — this is the fork's defining constraint.** Dealer GEX, net premium flow, IV rank, and off-exchange activity are **computed** here, not returned by a vendor. Any change to those derivations must keep the provenance and bound disclosures intact (`massive-data.md` §4). Anything in §6's cannot-produce list must be *declared unavailable*, never estimated — that list is a contract with the user, not a TODO.

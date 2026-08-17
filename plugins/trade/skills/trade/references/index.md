@@ -1,7 +1,7 @@
 ---
 type: Index
 title: Trade Knowledge Base — Bundle Root
-description: OKF v0.1 entry point for the curated trade knowledge bundle — frameworks, 32 pitfalls, case studies, command references.
+description: OKF v0.1 entry point for the curated trade knowledge bundle — frameworks, 33 pitfalls, case studies, command references.
 tags: [index, okf, bundle-root, trading]
 timestamp: 2026-07-30T04:30:00Z
 ---
@@ -30,11 +30,12 @@ The curated, shared knowledge bundle behind the `trade` skill. It is an **[Open 
 
 | File | Type | What it covers |
 |---|---|---|
-| [`unusual-whales.md`](unusual-whales.md) | Data Source | Direct Unusual Whales access when the user has a subscription (Data Access **tier 0**) — availability gate, MCP + REST auth, endpoint map by trading question, entitlement gaps (volatility add-on, congress, futures), and verified field traps. Load it before writing any UW request; skip the tier entirely when no key resolves. |
+| [`massive-data.md`](massive-data.md) | Data Source | Massive (Polygon) — Data Access **tier 1**, the quantitative backbone. Availability gate, MCP + REST access, endpoint map by trading question, the **self-computed derivations** that replace vendor GEX / net-premium / IV-rank feeds (with their assumptions), field traps, and an explicit list of what this stack cannot produce. |
+| [`alpaca-data.md`](alpaca-data.md) | Data Source | Alpaca — Data Access **tier 2**. The user's own positions / cost basis / P&L / order history, market calendar, and a second quote-and-greeks read for cross-checking tier 1. Read-only by construction: no trading toolset is wired. |
 
 ## Pitfalls
 
-**[`pitfalls/index.md`](pitfalls/index.md)** — 32 analytical and risk-management biases (`Trading Pitfall`), one file per rule, with lookup-by-trade-type. Load individual `pitfalls/NN-*.md` files when a matching situation arises.
+**[`pitfalls/index.md`](pitfalls/index.md)** — 33 analytical and risk-management biases (`Trading Pitfall`), one file per rule, with lookup-by-trade-type. Load individual `pitfalls/NN-*.md` files when a matching situation arises.
 
 ## Case studies
 

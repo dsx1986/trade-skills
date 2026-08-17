@@ -49,7 +49,7 @@ Signature: a gap-up or thrust to a **new high that closes in the bottom ~quartil
 3. Do **not** buy the touch — require a volume-contraction hold + reclaim / inside-day, or an intraday rejection-hold close.
 4. Ladder (~⅓ per zone). Never full-size the shallowest zone.
 5. Invalidation = a high-volume close below the deepest *trend-intact* reference (the structural shelf / EMA cluster) → abort; don't average toward the next MA down (regime change, not a retest). Flip per pitfall 4.
-6. Express the bid as a **cash-secured short put** at / below the reference strike — get paid to be the bid; assignment builds the position at your price (subject to options availability — non-US listings may need a broker like IBKR, not TV / Funda).
+6. Express the bid as a **cash-secured short put** at / below the reference strike — get paid to be the bid; assignment builds the position at your price (subject to options availability — Massive and Alpaca cover **US options only**, so a non-US listing needs a broker like IBKR and sits outside this stack's data).
 7. Don't chase a blow-off wick — the entry is the subsequent retest-hold, not the close.
 
 ### 6. Cross-references

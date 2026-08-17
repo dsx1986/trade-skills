@@ -1,18 +1,18 @@
 {
   "name": "trade",
   "owner": {
-    "name": "himself65"
+    "name": "dsx1986"
   },
   "metadata": {
-    "description": "Personal options trading skills — pitfalls library, case studies, structure-to-regime framework.",
-    "version": "2.9.0"
+    "description": "Personal options trading skills — pitfalls library, case studies, structure-to-regime framework. Massive + Alpaca data stack.",
+    "version": "3.0.0"
   },
   "plugins": [
     {
       "name": "trade",
       "source": "./plugins/trade",
-      "description": "Options trading knowledge — pitfalls, case studies, structure-to-regime matching.",
-      "version": "2.9.0"
+      "description": "Options trading knowledge — pitfalls, case studies, structure-to-regime matching. Massive + Alpaca data stack.",
+      "version": "3.0.0"
     }
   ]
 }
